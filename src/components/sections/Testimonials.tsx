@@ -14,7 +14,7 @@ export function Testimonials() {
   return (
     <CosmicSection
       id="testimonials"
-      className="testimonials-section luxury-section portfolio-section section-padding-luxury overflow-hidden"
+      className="testimonials-section luxury-section portfolio-section section-padding-luxury overflow-x-clip"
     >
       {!preferLite && (
         <div className="portfolio-atmosphere portfolio-atmosphere-lite" aria-hidden>

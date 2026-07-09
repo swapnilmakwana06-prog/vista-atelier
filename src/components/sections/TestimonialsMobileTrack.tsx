@@ -79,6 +79,7 @@ export function TestimonialsMobileTrack() {
       <div
         ref={trackRef}
         className="testimonials-track-mobile"
+        data-lenis-prevent-horizontal
         role="region"
         aria-roledescription="carousel"
         aria-label="Client testimonials"

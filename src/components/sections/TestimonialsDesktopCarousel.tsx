@@ -96,6 +96,7 @@ export function TestimonialsDesktopCarousel({
       <div
         ref={emblaRef}
         className="testimonials-carousel overflow-hidden"
+        data-lenis-prevent-horizontal
         role="region"
         aria-roledescription="carousel"
         aria-label="Client testimonials"
