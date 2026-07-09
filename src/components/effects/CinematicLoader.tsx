@@ -44,11 +44,6 @@ export function CinematicLoader() {
   const [visible, setVisible] = useState(() => !hasLoaderPlayed());
   const [exiting, setExiting] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [ssrRoot, setSsrRoot] = useState<HTMLElement | null>(() =>
-    typeof document !== "undefined"
-      ? document.getElementById("vista-initial-loader")
-      : null
-  );
   const startedRef = useRef(false);
   const reduced = useReducedMotion();
   const { preferLite } = usePerformanceMode();
@@ -88,9 +83,6 @@ export function CinematicLoader() {
       dismissLoader(document.getElementById("vista-initial-loader"));
       return;
     }
-
-    const ssr = document.getElementById("vista-initial-loader");
-    if (ssr) setSsrRoot(ssr);
   }, [visible]);
 
   useEffect(() => {
@@ -197,7 +189,10 @@ export function CinematicLoader() {
     holdAt100,
   ]);
 
+  if (typeof window === "undefined") return null;
   if (!visible) return null;
+
+  const ssrRoot = document.getElementById("vista-initial-loader");
 
   const extras =
     ssrRoot &&
