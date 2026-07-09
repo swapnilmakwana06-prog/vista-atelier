@@ -22,6 +22,11 @@ export function CinematicLoader() {
   const [exiting, setExiting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [revealed, setRevealed] = useState(false);
+  const [handoff, setHandoff] = useState(
+    () =>
+      typeof document !== "undefined" &&
+      !!document.getElementById("vista-initial-loader")
+  );
   const reduced = useReducedMotion();
   const { preferLite } = usePerformanceMode();
 
@@ -55,16 +60,24 @@ export function CinematicLoader() {
   );
 
   useEffect(() => {
-    const ssr = document.getElementById("vista-initial-loader");
-    if (ssr) {
-      requestAnimationFrame(() => ssr.remove());
-    }
-  }, []);
-
-  useEffect(() => {
     const revealTimer = window.setTimeout(() => setRevealed(true), 80);
     return () => window.clearTimeout(revealTimer);
   }, []);
+
+  useEffect(() => {
+    if (!revealed) return;
+    const ssr = document.getElementById("vista-initial-loader");
+    if (!ssr) {
+      setHandoff(false);
+      return;
+    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        ssr.remove();
+        setHandoff(false);
+      });
+    });
+  }, [revealed]);
 
   useEffect(() => {
     if (reduced) {
@@ -144,6 +157,7 @@ export function CinematicLoader() {
       className={cn(
         "luxury-loader",
         preferLite && "luxury-loader-lite",
+        handoff && "luxury-loader-handoff",
         exiting && "luxury-loader-exit"
       )}
       aria-live="polite"

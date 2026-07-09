@@ -3961,6 +3961,32 @@ main {
   transition-duration: 0.75s;
 }
 
+/* SSR handoff — keep server loader visible until React is ready */
+.luxury-loader-handoff {
+  background: transparent;
+}
+
+.luxury-loader-handoff .luxury-loader-bg,
+.luxury-loader-handoff .luxury-loader-nebula,
+.luxury-loader-handoff .luxury-loader-vignette,
+.luxury-loader-handoff .luxury-loader-starfield,
+.luxury-loader-handoff .luxury-loader-curtain,
+.luxury-loader-handoff .luxury-loader-orbs,
+.luxury-loader-handoff .luxury-loader-logo-wrap,
+.luxury-loader-handoff .luxury-loader-tagline {
+  visibility: hidden;
+}
+
+.luxury-loader-handoff .luxury-loader-stage {
+  opacity: 1;
+  transform: none;
+  pointer-events: none;
+}
+
+.luxury-loader-handoff .luxury-loader-line-indeterminate {
+  animation: none;
+}
+
 .luxury-loader-exit {
   opacity: 0;
   visibility: hidden;
