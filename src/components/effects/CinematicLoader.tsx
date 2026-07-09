@@ -7,8 +7,9 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { hasLoaderPlayed, markLoaderPlayed } from "@/lib/loader-session";
 import { cn } from "@/lib/utils";
 
-const MIN_DURATION_DESKTOP = 2600;
-const MIN_DURATION_MOBILE = 1400;
+const MIN_VISIBLE_MS = 2000;
+const MIN_DURATION_DESKTOP = MIN_VISIBLE_MS;
+const MIN_DURATION_MOBILE = MIN_VISIBLE_MS;
 const MAX_DURATION_DESKTOP = 5200;
 const MAX_DURATION_MOBILE = 2400;
 const EXIT_DURATION_DESKTOP = 1200;
