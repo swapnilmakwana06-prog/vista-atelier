@@ -194,9 +194,17 @@ export default function RootLayout({
               <div className="luxury-loader-line-track">
                 <div className="luxury-loader-line-fill luxury-loader-line-indeterminate" />
               </div>
+              <p className="luxury-loader-progress" aria-hidden>
+                0<span className="luxury-loader-progress-suffix">%</span>
+              </p>
             </div>
           </div>
         </div>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem('vista-loader-done')==='1'){var l=document.getElementById('vista-initial-loader');if(l)l.remove();document.documentElement.removeAttribute('data-loading');}}catch(e){}`,
+          }}
+        />
         <a href="#main-content" className="skip-to-content">
           Skip to main content
         </a>

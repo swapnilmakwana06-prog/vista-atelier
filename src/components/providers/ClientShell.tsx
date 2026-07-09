@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { CinematicLoader } from "@/components/effects/CinematicLoader";
 import { PerformanceProvider } from "@/components/providers/PerformanceProvider";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
@@ -19,14 +20,6 @@ const CustomCursor = dynamic(
   () =>
     import("@/components/providers/CustomCursor").then((m) => m.CustomCursor),
   { ssr: false, loading: () => null }
-);
-
-const CinematicLoader = dynamic(
-  () =>
-    import("@/components/effects/CinematicLoader").then(
-      (m) => m.CinematicLoader
-    ),
-  { ssr: false }
 );
 
 function MobileStaticBackground() {

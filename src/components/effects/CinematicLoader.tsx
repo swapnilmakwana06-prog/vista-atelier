@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { usePerformanceMode } from "@/hooks/usePerformanceMode";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { hasLoaderPlayed, markLoaderPlayed } from "@/lib/loader-session";
 import { cn } from "@/lib/utils";
 
 const MIN_DURATION_DESKTOP = 2600;
@@ -19,16 +21,35 @@ const STAR_COUNT_MOBILE = 18;
 const ORB_COUNT_DESKTOP = 10;
 const ORB_COUNT_MOBILE = 4;
 
+let loaderRunLock = false;
+
+function dismissLoader(el: HTMLElement | null) {
+  el?.remove();
+  document.body.style.overflow = "";
+  document.documentElement.removeAttribute("data-loading");
+  window.dispatchEvent(new CustomEvent("vista:scroll-unlock"));
+}
+
+function updateSsrProgress(root: HTMLElement, pct: number) {
+  const fill = root.querySelector<HTMLElement>(".luxury-loader-line-fill");
+  const progressEl = root.querySelector<HTMLElement>(".luxury-loader-progress");
+  fill?.classList.remove("luxury-loader-line-indeterminate");
+  if (fill) fill.style.transform = `scaleX(${pct / 100})`;
+  if (progressEl) {
+    progressEl.innerHTML = `${Math.round(pct)}<span class="luxury-loader-progress-suffix">%</span>`;
+  }
+}
+
 export function CinematicLoader() {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(() => !hasLoaderPlayed());
   const [exiting, setExiting] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [revealed, setRevealed] = useState(false);
-  const [handoff, setHandoff] = useState(
-    () =>
-      typeof document !== "undefined" &&
-      !!document.getElementById("vista-initial-loader")
+  const [ssrRoot, setSsrRoot] = useState<HTMLElement | null>(() =>
+    typeof document !== "undefined"
+      ? document.getElementById("vista-initial-loader")
+      : null
   );
+  const startedRef = useRef(false);
   const reduced = useReducedMotion();
   const { preferLite } = usePerformanceMode();
 
@@ -63,39 +84,43 @@ export function CinematicLoader() {
   );
 
   useEffect(() => {
-    const revealTimer = window.setTimeout(() => setRevealed(true), 80);
-    return () => window.clearTimeout(revealTimer);
-  }, []);
+    if (!visible) {
+      dismissLoader(document.getElementById("vista-initial-loader"));
+      return;
+    }
 
-  useEffect(() => {
-    if (!revealed) return;
     const ssr = document.getElementById("vista-initial-loader");
-    if (!ssr) {
-      setHandoff(false);
-      return;
-    }
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        ssr.remove();
-        setHandoff(false);
-      });
-    });
-  }, [revealed]);
+    if (ssr) setSsrRoot(ssr);
+  }, [visible]);
 
   useEffect(() => {
-    if (reduced) {
+    if (!visible || reduced) return;
+
+    const root = document.getElementById("vista-initial-loader");
+    if (root) {
+      root.classList.toggle("luxury-loader-lite", preferLite);
+    }
+  }, [visible, reduced, preferLite]);
+
+  useEffect(() => {
+    if (!visible) return;
+
+    if (reduced || hasLoaderPlayed()) {
+      markLoaderPlayed();
       setVisible(false);
-      document.body.style.overflow = "";
-      document.documentElement.removeAttribute("data-loading");
-      document.getElementById("vista-initial-loader")?.remove();
-      window.dispatchEvent(new CustomEvent("vista:scroll-unlock"));
+      dismissLoader(document.getElementById("vista-initial-loader"));
       return;
     }
+
+    if (loaderRunLock || startedRef.current) return;
+    loaderRunLock = true;
+    startedRef.current = true;
 
     document.documentElement.setAttribute("data-loading", "");
     document.body.style.overflow = "hidden";
     window.dispatchEvent(new CustomEvent("vista:scroll-lock"));
 
+    const root = document.getElementById("vista-initial-loader");
     const start = performance.now();
     let loaded = document.readyState === "complete";
     let raf = 0;
@@ -105,12 +130,13 @@ export function CinematicLoader() {
     const beginExit = () => {
       if (finished) return;
       finished = true;
+      markLoaderPlayed();
       setExiting(true);
+      root?.classList.add("luxury-loader-exit");
+
       window.setTimeout(() => {
         setVisible(false);
-        document.body.style.overflow = "";
-        document.documentElement.removeAttribute("data-loading");
-        window.dispatchEvent(new CustomEvent("vista:scroll-unlock"));
+        dismissLoader(root);
       }, exitDuration);
     };
 
@@ -138,6 +164,7 @@ export function CinematicLoader() {
       }
 
       setProgress(nextProgress);
+      if (root) updateSsrProgress(root, nextProgress);
 
       if (nextProgress >= 100) {
         if (!reached100At) reached100At = now;
@@ -160,18 +187,65 @@ export function CinematicLoader() {
       finished = true;
       cancelAnimationFrame(raf);
       window.removeEventListener("load", onLoad);
-      document.body.style.overflow = "";
     };
-  }, [reduced, minDuration, maxDuration, exitDuration, holdAt100]);
+  }, [
+    visible,
+    reduced,
+    minDuration,
+    maxDuration,
+    exitDuration,
+    holdAt100,
+  ]);
 
   if (!visible) return null;
+
+  const extras =
+    ssrRoot &&
+    createPortal(
+      <>
+        <div className="luxury-loader-starfield" aria-hidden>
+          {stars.map((star, i) => (
+            <span
+              key={i}
+              className="luxury-loader-star"
+              style={{
+                left: `${star.left}%`,
+                top: `${star.top}%`,
+                width: star.size,
+                height: star.size,
+                animationDuration: `${star.duration}s`,
+                animationDelay: `${star.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+        <div className="luxury-loader-orbs" aria-hidden>
+          {orbs.map((orb, i) => (
+            <span
+              key={i}
+              className="luxury-loader-orb"
+              style={{
+                width: orb.size,
+                height: orb.size,
+                ["--orb-angle" as string]: `${orb.angle}deg`,
+                ["--orb-radius" as string]: `${orb.radius}px`,
+                animationDelay: `${orb.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+        <div className="luxury-loader-curtain" aria-hidden />
+      </>,
+      ssrRoot
+    );
+
+  if (ssrRoot) return extras;
 
   return (
     <div
       className={cn(
         "luxury-loader",
         preferLite && "luxury-loader-lite",
-        handoff && "luxury-loader-handoff",
         exiting && "luxury-loader-exit"
       )}
       aria-live="polite"
@@ -199,12 +273,7 @@ export function CinematicLoader() {
         ))}
       </div>
 
-      <div
-        className={cn(
-          "luxury-loader-stage",
-          revealed && "luxury-loader-stage-revealed"
-        )}
-      >
+      <div className="luxury-loader-stage luxury-loader-stage-revealed">
         <div className="luxury-loader-orbs" aria-hidden>
           {orbs.map((orb, i) => (
             <span
@@ -229,7 +298,9 @@ export function CinematicLoader() {
           </h1>
         </div>
 
-        <p className="luxury-loader-tagline">Crafting Timeless Spaces</p>
+        <p className="luxury-loader-tagline luxury-loader-tagline-visible">
+          Crafting Timeless Spaces
+        </p>
 
         <div className="luxury-loader-line-wrap">
           <div className="luxury-loader-line-track">
