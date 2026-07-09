@@ -11,6 +11,8 @@ const MAX_DURATION_DESKTOP = 5200;
 const MAX_DURATION_MOBILE = 2400;
 const EXIT_DURATION_DESKTOP = 1200;
 const EXIT_DURATION_MOBILE = 700;
+const HOLD_AT_100_DESKTOP = 550;
+const HOLD_AT_100_MOBILE = 400;
 
 const STAR_COUNT_DESKTOP = 48;
 const STAR_COUNT_MOBILE = 18;
@@ -35,6 +37,7 @@ export function CinematicLoader() {
   const minDuration = preferLite ? MIN_DURATION_MOBILE : MIN_DURATION_DESKTOP;
   const maxDuration = preferLite ? MAX_DURATION_MOBILE : MAX_DURATION_DESKTOP;
   const exitDuration = preferLite ? EXIT_DURATION_MOBILE : EXIT_DURATION_DESKTOP;
+  const holdAt100 = preferLite ? HOLD_AT_100_MOBILE : HOLD_AT_100_DESKTOP;
 
   const stars = useMemo(
     () =>
@@ -97,11 +100,11 @@ export function CinematicLoader() {
     let loaded = document.readyState === "complete";
     let raf = 0;
     let finished = false;
+    let reached100At = 0;
 
-    const complete = () => {
+    const beginExit = () => {
       if (finished) return;
       finished = true;
-      setProgress(100);
       setExiting(true);
       window.setTimeout(() => {
         setVisible(false);
@@ -122,19 +125,30 @@ export function CinematicLoader() {
     const tick = (now: number) => {
       const elapsed = now - start;
       const eased = 1 - Math.pow(1 - Math.min(elapsed / minDuration, 1), 2.2);
-      const target = loaded ? 100 : 88;
-      setProgress(
-        Math.min(eased * target, loaded && elapsed >= minDuration ? 100 : 98)
-      );
+      const readyToFinish = loaded && elapsed >= minDuration;
+      const forceFinish = elapsed >= maxDuration;
 
-      if (loaded && elapsed >= minDuration) {
-        complete();
-        return;
+      let nextProgress: number;
+      if (readyToFinish || forceFinish) {
+        nextProgress = 100;
+      } else if (loaded) {
+        nextProgress = Math.min(99, eased * 99);
+      } else {
+        nextProgress = Math.min(88, eased * 88);
       }
 
-      if (elapsed >= maxDuration) {
-        complete();
-        return;
+      setProgress(nextProgress);
+
+      if (nextProgress >= 100) {
+        if (!reached100At) reached100At = now;
+        if (readyToFinish || forceFinish) {
+          if (now - reached100At >= holdAt100) {
+            beginExit();
+            return;
+          }
+        }
+      } else {
+        reached100At = 0;
       }
 
       raf = requestAnimationFrame(tick);
@@ -148,7 +162,7 @@ export function CinematicLoader() {
       window.removeEventListener("load", onLoad);
       document.body.style.overflow = "";
     };
-  }, [reduced, minDuration, maxDuration, exitDuration]);
+  }, [reduced, minDuration, maxDuration, exitDuration, holdAt100]);
 
   if (!visible) return null;
 
