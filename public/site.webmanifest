@@ -4,8 +4,8 @@
   "description": "Luxury interior design studio crafting timeless, cinematic spaces.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#04060f",
-  "theme_color": "#04060f",
+  "background_color": "#0a0a0c",
+  "theme_color": "#0a0a0c",
   "orientation": "portrait-primary",
   "icons": [
     {

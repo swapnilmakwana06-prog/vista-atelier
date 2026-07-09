@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import { ClientShell } from "@/components/providers/ClientShell";
 import { siteConfig, absoluteUrl } from "@/lib/seo";
+import { themeColors, themeInitScript } from "@/lib/theme";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -22,10 +24,10 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#04060f" },
-    { media: "(prefers-color-scheme: light)", color: "#04060f" },
+    { media: "(prefers-color-scheme: dark)", color: themeColors.dark },
+    { media: "(prefers-color-scheme: light)", color: themeColors.light },
   ],
-  colorScheme: "dark",
+  colorScheme: "dark light",
 };
 
 export const metadata: Metadata = {
@@ -142,9 +144,11 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${cormorant.variable} ${inter.variable} scroll-smooth`}
+      data-theme="dark"
       suppressHydrationWarning
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var m=window.matchMedia('(max-width:1023px)'),t=window.matchMedia('(pointer:coarse)'),r=window.matchMedia('(prefers-reduced-motion:reduce)');if(m.matches||t.matches||r.matches)document.documentElement.setAttribute('data-perf','lite');}catch(e){}})();`,
@@ -161,7 +165,7 @@ export default function RootLayout({
         <a href="#main-content" className="skip-to-content">
           Skip to main content
         </a>
-        {children}
+        <ClientShell>{children}</ClientShell>
       </body>
     </html>
   );
