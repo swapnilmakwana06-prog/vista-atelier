@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { PerformanceProvider } from "@/components/providers/PerformanceProvider";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { usePerformanceMode } from "@/hooks/usePerformanceMode";
 
 const CosmicBackground = dynamic(
@@ -18,11 +19,6 @@ const CustomCursor = dynamic(
   () =>
     import("@/components/providers/CustomCursor").then((m) => m.CustomCursor),
   { ssr: false, loading: () => null }
-);
-
-const ThemeToggle = dynamic(
-  () => import("@/components/ui/ThemeToggle").then((m) => m.ThemeToggle),
-  { ssr: false }
 );
 
 const CinematicLoader = dynamic(

@@ -5,7 +5,7 @@ import { IMAGE_QUALITY } from "@/lib/image";
 /** Server-rendered mobile hero — sharp static image, luxury overlays, zero client JS */
 export function HeroMobileStatic() {
   return (
-    <div className="hero-mobile-wrap absolute inset-0 overflow-hidden bg-[#03050c]">
+    <div className="hero-mobile-wrap absolute inset-0 overflow-hidden bg-background">
       <Image
         src={heroPoster}
         alt=""

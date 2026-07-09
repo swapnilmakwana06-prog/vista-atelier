@@ -143,7 +143,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${inter.variable} scroll-smooth`}
+      className={`${cormorant.variable} ${inter.variable} scroll-smooth dark`}
       data-theme="dark"
       suppressHydrationWarning
     >

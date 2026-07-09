@@ -4,62 +4,62 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
-  useState,
+  useSyncExternalStore,
 } from "react";
 import {
-  applyTheme,
-  getStoredTheme,
+  getTheme,
+  setTheme as persistTheme,
+  toggleTheme as flipTheme,
   type Theme,
-  THEME_STORAGE_KEY,
 } from "@/lib/theme";
 
 interface ThemeContextValue {
   theme: Theme;
+  setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
-  mounted: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
   theme: "dark",
+  setTheme: () => {},
   toggleTheme: () => {},
-  mounted: false,
 });
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
+function subscribe(onStoreChange: () => void) {
+  const root = document.documentElement;
+  const observer = new MutationObserver(onStoreChange);
+  observer.observe(root, {
+    attributes: true,
+    attributeFilter: ["class", "data-theme"],
+  });
+  window.addEventListener("storage", onStoreChange);
+  return () => {
+    observer.disconnect();
+    window.removeEventListener("storage", onStoreChange);
+  };
+}
 
-  useEffect(() => {
-    const initial = getStoredTheme();
-    setTheme(initial);
-    applyTheme(initial);
-    setMounted(true);
+function getSnapshot(): Theme {
+  return getTheme();
+}
+
+function getServerSnapshot(): Theme {
+  return "dark";
+}
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  const setTheme = useCallback((next: Theme) => {
+    persistTheme(next);
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const next: Theme = prev === "dark" ? "light" : "dark";
-
-      try {
-        localStorage.setItem(THEME_STORAGE_KEY, next);
-      } catch {
-        /* localStorage unavailable */
-      }
-
-      applyTheme(next);
-
-      document.documentElement.classList.add("theme-transitioning");
-      window.setTimeout(() => {
-        document.documentElement.classList.remove("theme-transitioning");
-      }, 450);
-
-      return next;
-    });
+    flipTheme();
   }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, mounted }}>
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -68,3 +68,4 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   return useContext(ThemeContext);
 }
+
