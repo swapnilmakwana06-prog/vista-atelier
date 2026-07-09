@@ -53,17 +53,11 @@ function ShellChrome() {
   );
 }
 
-function LoaderGate() {
-  const { preferLite } = usePerformanceMode();
-  if (preferLite) return null;
-  return <CinematicLoader />;
-}
-
 export function ClientShell({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
       <PerformanceProvider>
-        <LoaderGate />
+        <CinematicLoader />
         <SmoothScroll>
           <ShellChrome />
           {children}

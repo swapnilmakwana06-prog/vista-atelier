@@ -158,7 +158,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var m=window.matchMedia('(max-width:1023px)'),t=window.matchMedia('(pointer:coarse)'),r=window.matchMedia('(prefers-reduced-motion:reduce)');if(m.matches||t.matches||r.matches)document.documentElement.setAttribute('data-perf','lite');}catch(e){}})();`,
+            __html: `(function(){try{var m=window.matchMedia('(max-width:1023px)'),t=window.matchMedia('(pointer:coarse)'),r=window.matchMedia('(prefers-reduced-motion:reduce)');if(m.matches||t.matches||r.matches)document.documentElement.setAttribute('data-perf','lite');if(!r.matches)document.documentElement.setAttribute('data-loading','');}catch(e){}})();`,
           }}
         />
         <script
@@ -169,6 +169,34 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-background text-foreground antialiased">
+        <div
+          id="vista-initial-loader"
+          className="luxury-loader"
+          aria-live="polite"
+          aria-label="Loading VISTA Atelier"
+        >
+          <div className="luxury-loader-bg" />
+          <div className="luxury-loader-nebula luxury-loader-nebula-a" />
+          <div className="luxury-loader-nebula luxury-loader-nebula-b" />
+          <div className="luxury-loader-vignette" />
+          <div className="luxury-loader-stage luxury-loader-stage-revealed">
+            <div className="luxury-loader-logo-wrap">
+              <div className="luxury-loader-logo-glow" aria-hidden />
+              <p className="luxury-loader-logo font-heading">
+                <span className="luxury-loader-logo-vista">VISTA</span>{" "}
+                <span className="luxury-loader-logo-atelier">Atelier</span>
+              </p>
+            </div>
+            <p className="luxury-loader-tagline luxury-loader-tagline-visible">
+              Crafting Timeless Spaces
+            </p>
+            <div className="luxury-loader-line-wrap">
+              <div className="luxury-loader-line-track">
+                <div className="luxury-loader-line-fill luxury-loader-line-indeterminate" />
+              </div>
+            </div>
+          </div>
+        </div>
         <a href="#main-content" className="skip-to-content">
           Skip to main content
         </a>

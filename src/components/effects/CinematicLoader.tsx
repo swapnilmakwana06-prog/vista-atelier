@@ -5,17 +5,17 @@ import { usePerformanceMode } from "@/hooks/usePerformanceMode";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/utils";
 
-const MIN_DURATION_DESKTOP = 2400;
-const MIN_DURATION_MOBILE = 900;
-const MAX_DURATION_DESKTOP = 5000;
-const MAX_DURATION_MOBILE = 1600;
+const MIN_DURATION_DESKTOP = 2600;
+const MIN_DURATION_MOBILE = 1400;
+const MAX_DURATION_DESKTOP = 5200;
+const MAX_DURATION_MOBILE = 2400;
 const EXIT_DURATION_DESKTOP = 1200;
-const EXIT_DURATION_MOBILE = 500;
+const EXIT_DURATION_MOBILE = 700;
 
 const STAR_COUNT_DESKTOP = 48;
-const STAR_COUNT_MOBILE = 8;
+const STAR_COUNT_MOBILE = 18;
 const ORB_COUNT_DESKTOP = 10;
-const ORB_COUNT_MOBILE = 2;
+const ORB_COUNT_MOBILE = 4;
 
 export function CinematicLoader() {
   const [visible, setVisible] = useState(true);
@@ -55,7 +55,10 @@ export function CinematicLoader() {
   );
 
   useEffect(() => {
-    document.getElementById("vista-initial-loader")?.remove();
+    const ssr = document.getElementById("vista-initial-loader");
+    if (ssr) {
+      requestAnimationFrame(() => ssr.remove());
+    }
   }, []);
 
   useEffect(() => {
@@ -73,6 +76,7 @@ export function CinematicLoader() {
       return;
     }
 
+    document.documentElement.setAttribute("data-loading", "");
     document.body.style.overflow = "hidden";
     window.dispatchEvent(new CustomEvent("vista:scroll-lock"));
 
@@ -206,6 +210,10 @@ export function CinematicLoader() {
               style={{ transform: `scaleX(${progress / 100})` }}
             />
           </div>
+          <p className="luxury-loader-progress" aria-hidden>
+            {Math.round(progress)}
+            <span className="luxury-loader-progress-suffix">%</span>
+          </p>
         </div>
       </div>
 
