@@ -27,8 +27,9 @@ export function TestimonialsDesktopCarousel({
       loop: true,
       align: "center",
       dragFree: false,
-      duration: 28,
+      duration: 18,
       skipSnaps: false,
+      watchDrag: true,
     },
     plugins
   );

@@ -5,42 +5,59 @@ import { testimonials } from "@/lib/data";
 import { TestimonialCard } from "@/components/sections/TestimonialCard";
 import { cn } from "@/lib/utils";
 
+function nearestSlideIndex(track: HTMLElement): number {
+  const center = track.scrollLeft + track.clientWidth / 2;
+  const slides = track.querySelectorAll<HTMLElement>("[data-testimonial-index]");
+  let closest = 0;
+  let minDist = Infinity;
+
+  slides.forEach((slide) => {
+    const slideCenter = slide.offsetLeft + slide.offsetWidth / 2;
+    const dist = Math.abs(center - slideCenter);
+    const index = Number(slide.dataset.testimonialIndex ?? 0);
+    if (dist < minDist) {
+      minDist = dist;
+      closest = index;
+    }
+  });
+
+  return closest;
+}
+
 export function TestimonialsMobileTrack() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const activeRef = useRef(0);
 
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
 
-    const slides = track.querySelectorAll<HTMLElement>("[data-testimonial-index]");
-    if (!slides.length) return;
+    let raf = 0;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        let bestIndex = -1;
-        let bestRatio = 0;
-
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const ratio = entry.intersectionRatio;
-          const index = Number(entry.target.getAttribute("data-testimonial-index"));
-          if (ratio > bestRatio) {
-            bestRatio = ratio;
-            bestIndex = index;
-          }
-        }
-
-        if (bestIndex >= 0) setActive(bestIndex);
-      },
-      {
-        root: track,
-        threshold: [0.55, 0.7, 0.85],
+    const syncActive = () => {
+      const next = nearestSlideIndex(track);
+      if (next !== activeRef.current) {
+        activeRef.current = next;
+        setActive(next);
       }
-    );
+    };
 
-    slides.forEach((slide) => observer.observe(slide));
-    return () => observer.disconnect();
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        syncActive();
+      });
+    };
+
+    track.addEventListener("scroll", onScroll, { passive: true });
+    syncActive();
+
+    return () => {
+      track.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   const scrollTo = useCallback((index: number) => {
@@ -52,7 +69,9 @@ export function TestimonialsMobileTrack() {
 
     const left =
       slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2;
-    track.scrollTo({ left, behavior: "smooth" });
+    track.scrollTo({ left, behavior: "auto" });
+    activeRef.current = index;
+    setActive(index);
   }, []);
 
   return (

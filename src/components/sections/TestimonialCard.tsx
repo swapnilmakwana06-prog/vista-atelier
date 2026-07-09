@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { Testimonial } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +17,7 @@ interface TestimonialCardProps {
   className?: string;
 }
 
-export function TestimonialCard({
+export const TestimonialCard = memo(function TestimonialCard({
   testimonial,
   active = true,
   className,
@@ -66,4 +67,4 @@ export function TestimonialCard({
       </div>
     </div>
   );
-}
+});
