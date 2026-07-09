@@ -1,26 +1,14 @@
-const LOADER_KEY = "vista-loader-done";
+/** In-memory guard — prevents duplicate runs during the same page load only. */
+let loaderCompletedThisPage = false;
 
 export function hasLoaderPlayed(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    return sessionStorage.getItem(LOADER_KEY) === "1";
-  } catch {
-    return false;
-  }
+  return loaderCompletedThisPage;
 }
 
 export function markLoaderPlayed(): void {
-  try {
-    sessionStorage.setItem(LOADER_KEY, "1");
-  } catch {
-    /* private mode */
-  }
+  loaderCompletedThisPage = true;
 }
 
 export function clearLoaderSession(): void {
-  try {
-    sessionStorage.removeItem(LOADER_KEY);
-  } catch {
-    /* noop */
-  }
+  loaderCompletedThisPage = false;
 }

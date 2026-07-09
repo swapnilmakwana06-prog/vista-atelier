@@ -158,7 +158,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var m=window.matchMedia('(max-width:1023px)'),t=window.matchMedia('(pointer:coarse)'),r=window.matchMedia('(prefers-reduced-motion:reduce)');if(m.matches||t.matches||r.matches)document.documentElement.setAttribute('data-perf','lite');if(!r.matches)document.documentElement.setAttribute('data-loading','');}catch(e){}})();`,
+            __html: `(function(){try{var m=window.matchMedia('(max-width:1023px)'),t=window.matchMedia('(pointer:coarse)'),r=window.matchMedia('(prefers-reduced-motion:reduce)');if(m.matches||t.matches||r.matches)document.documentElement.setAttribute('data-perf','lite');document.documentElement.setAttribute('data-loading','');}catch(e){}})();`,
           }}
         />
         <script
@@ -200,11 +200,7 @@ export default function RootLayout({
             </div>
           </div>
         </div>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{if(sessionStorage.getItem('vista-loader-done')==='1'){var l=document.getElementById('vista-initial-loader');if(l)l.remove();document.documentElement.removeAttribute('data-loading');}}catch(e){}`,
-          }}
-        />
+
         <a href="#main-content" className="skip-to-content">
           Skip to main content
         </a>

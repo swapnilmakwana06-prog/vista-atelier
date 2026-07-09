@@ -11,7 +11,7 @@ const MIN_VISIBLE_MS = 2000;
 const MIN_DURATION_DESKTOP = MIN_VISIBLE_MS;
 const MIN_DURATION_MOBILE = MIN_VISIBLE_MS;
 const MAX_DURATION_DESKTOP = 5200;
-const MAX_DURATION_MOBILE = 2400;
+const MAX_DURATION_MOBILE = 3200;
 const EXIT_DURATION_DESKTOP = 1200;
 const EXIT_DURATION_MOBILE = 700;
 const HOLD_AT_100_DESKTOP = 550;
@@ -21,8 +21,6 @@ const STAR_COUNT_DESKTOP = 48;
 const STAR_COUNT_MOBILE = 18;
 const ORB_COUNT_DESKTOP = 10;
 const ORB_COUNT_MOBILE = 4;
-
-let loaderRunLock = false;
 
 function dismissLoader(el: HTMLElement | null) {
   el?.remove();
@@ -45,7 +43,6 @@ export function CinematicLoader() {
   const [visible, setVisible] = useState(() => !hasLoaderPlayed());
   const [exiting, setExiting] = useState(false);
   const [progress, setProgress] = useState(0);
-  const startedRef = useRef(false);
   const reduced = useReducedMotion();
   const { preferLite } = usePerformanceMode();
 
@@ -55,6 +52,21 @@ export function CinematicLoader() {
   const maxDuration = preferLite ? MAX_DURATION_MOBILE : MAX_DURATION_DESKTOP;
   const exitDuration = preferLite ? EXIT_DURATION_MOBILE : EXIT_DURATION_DESKTOP;
   const holdAt100 = preferLite ? HOLD_AT_100_MOBILE : HOLD_AT_100_DESKTOP;
+
+  const timingRef = useRef({
+    minDuration,
+    maxDuration,
+    exitDuration,
+    holdAt100,
+    preferLite,
+  });
+  timingRef.current = {
+    minDuration,
+    maxDuration,
+    exitDuration,
+    holdAt100,
+    preferLite,
+  };
 
   const stars = useMemo(
     () =>
@@ -82,32 +94,20 @@ export function CinematicLoader() {
   useEffect(() => {
     if (!visible) {
       dismissLoader(document.getElementById("vista-initial-loader"));
-      return;
     }
   }, [visible]);
 
   useEffect(() => {
-    if (!visible || reduced) return;
+    if (!visible) return;
 
     const root = document.getElementById("vista-initial-loader");
     if (root) {
-      root.classList.toggle("luxury-loader-lite", preferLite);
+      root.classList.toggle("luxury-loader-lite", timingRef.current.preferLite);
     }
-  }, [visible, reduced, preferLite]);
+  }, [visible, preferLite]);
 
   useEffect(() => {
-    if (!visible) return;
-
-    if (reduced || hasLoaderPlayed()) {
-      markLoaderPlayed();
-      setVisible(false);
-      dismissLoader(document.getElementById("vista-initial-loader"));
-      return;
-    }
-
-    if (loaderRunLock || startedRef.current) return;
-    loaderRunLock = true;
-    startedRef.current = true;
+    if (!visible || hasLoaderPlayed()) return;
 
     document.documentElement.setAttribute("data-loading", "");
     document.body.style.overflow = "hidden";
@@ -117,8 +117,10 @@ export function CinematicLoader() {
     const start = performance.now();
     let loaded = document.readyState === "complete";
     let raf = 0;
-    let finished = false;
+    let exitTimer = 0;
+    let dismissTimer = 0;
     let reached100At = 0;
+    let finished = false;
 
     const beginExit = () => {
       if (finished) return;
@@ -127,10 +129,11 @@ export function CinematicLoader() {
       setExiting(true);
       root?.classList.add("luxury-loader-exit");
 
-      window.setTimeout(() => {
+      const { exitDuration: exitMs } = timingRef.current;
+      dismissTimer = window.setTimeout(() => {
         setVisible(false);
         dismissLoader(root);
-      }, exitDuration);
+      }, exitMs);
     };
 
     const onLoad = () => {
@@ -141,11 +144,27 @@ export function CinematicLoader() {
       window.addEventListener("load", onLoad);
     }
 
+    if (reduced) {
+      if (root) updateSsrProgress(root, 100);
+      setProgress(100);
+      exitTimer = window.setTimeout(beginExit, MIN_VISIBLE_MS);
+      return () => {
+        finished = true;
+        window.clearTimeout(exitTimer);
+        window.clearTimeout(dismissTimer);
+        window.removeEventListener("load", onLoad);
+      };
+    }
+
     const tick = (now: number) => {
+      if (finished) return;
+
+      const { minDuration: minMs, maxDuration: maxMs, holdAt100: holdMs } =
+        timingRef.current;
       const elapsed = now - start;
-      const eased = 1 - Math.pow(1 - Math.min(elapsed / minDuration, 1), 2.2);
-      const readyToFinish = loaded && elapsed >= minDuration;
-      const forceFinish = elapsed >= maxDuration;
+      const eased = 1 - Math.pow(1 - Math.min(elapsed / minMs, 1), 2.2);
+      const readyToFinish = loaded && elapsed >= minMs;
+      const forceFinish = elapsed >= maxMs;
 
       let nextProgress: number;
       if (readyToFinish || forceFinish) {
@@ -162,7 +181,7 @@ export function CinematicLoader() {
       if (nextProgress >= 100) {
         if (!reached100At) reached100At = now;
         if (readyToFinish || forceFinish) {
-          if (now - reached100At >= holdAt100) {
+          if (now - reached100At >= holdMs) {
             beginExit();
             return;
           }
@@ -179,16 +198,11 @@ export function CinematicLoader() {
     return () => {
       finished = true;
       cancelAnimationFrame(raf);
+      window.clearTimeout(exitTimer);
+      window.clearTimeout(dismissTimer);
       window.removeEventListener("load", onLoad);
     };
-  }, [
-    visible,
-    reduced,
-    minDuration,
-    maxDuration,
-    exitDuration,
-    holdAt100,
-  ]);
+  }, [visible, reduced]);
 
   if (typeof window === "undefined") return null;
   if (!visible) return null;
