@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Cormorant_Garamond, DM_Sans, Inter } from "next/font/google";
 import { ClientShell } from "@/components/providers/ClientShell";
 import { siteConfig, absoluteUrl } from "@/lib/seo";
 import { themeColors, themeInitScript } from "@/lib/theme";
@@ -16,6 +16,13 @@ const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-dm-sans",
   display: "swap",
 });
 
@@ -143,7 +150,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${inter.variable} scroll-smooth dark`}
+      className={`${cormorant.variable} ${inter.variable} ${dmSans.variable} scroll-smooth dark render-sharp`}
       data-theme="dark"
       suppressHydrationWarning
     >

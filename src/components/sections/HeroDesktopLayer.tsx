@@ -13,7 +13,7 @@ const CinematicHeroMedia = dynamic(
   { ssr: false }
 );
 
-/** Desktop-only hero video + scroll parallax — never loads on mobile */
+/** Desktop-only hero video — scroll fade uses translateY only (no 3D blur). */
 export function HeroDesktopLayer() {
   const isDesktop = useIsDesktop();
   const reduced = useReducedMotion();
@@ -24,8 +24,6 @@ export function HeroDesktopLayer() {
     const content = document.getElementById("hero-content");
     const hint = document.getElementById("hero-scroll-hint");
     if (!content) return;
-
-    content.classList.add("gpu-layer");
 
     let ticking = false;
 
@@ -38,10 +36,9 @@ export function HeroDesktopLayer() {
           1
         );
         const opacity = Math.max(1 - progress * 2.4, 0);
-        const lift = progress * 64;
-        const depth = progress * 48;
+        const lift = progress * 48;
         content.style.opacity = String(opacity);
-        content.style.transform = `perspective(1400px) translate3d(0, ${-lift}px, ${depth}px) scale(${1 - progress * 0.07}) rotateX(${progress * 5}deg)`;
+        content.style.transform = `translate3d(0, ${-lift}px, 0)`;
         if (hint) hint.style.opacity = String(Math.max(1 - progress * 5, 0));
         ticking = false;
       });
@@ -53,7 +50,6 @@ export function HeroDesktopLayer() {
       window.removeEventListener("scroll", onScroll);
       content.style.opacity = "";
       content.style.transform = "";
-      content.classList.remove("gpu-layer");
     };
   }, [reduced, isDesktop]);
 

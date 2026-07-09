@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { fallbackProjectImage } from "@/lib/data";
-import { IMAGE_QUALITY } from "@/lib/image";
+import { IMAGE_DEFAULTS, IMAGE_QUALITY } from "@/lib/image";
 import { cn } from "@/lib/utils";
 
 interface ProjectImageProps {
@@ -30,15 +30,15 @@ export function ProjectImage({
 
   return (
     <>
-      {!loaded && (
-        <div className="absolute inset-0 bg-card" aria-hidden />
-      )}
+      {!loaded && <div className="absolute inset-0 bg-card" aria-hidden />}
       <Image
         src={imgSrc}
         alt={alt}
         fill
         sizes={sizes}
         quality={resolvedQuality}
+        unoptimized={IMAGE_DEFAULTS.unoptimized}
+        decoding={IMAGE_DEFAULTS.decoding}
         priority={priority}
         loading={priority ? "eager" : "lazy"}
         className={cn(

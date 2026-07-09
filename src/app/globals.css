@@ -141,6 +141,10 @@ html {
   scroll-behavior: auto;
   color-scheme: light;
   -webkit-overflow-scrolling: touch;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 html.dark {
@@ -224,9 +228,39 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-synthesis: none;
   transition:
     background-color var(--theme-transition),
     color var(--theme-transition);
+}
+
+/* Global sharp rendering — typography, subpixel, GPU without blur */
+.render-sharp,
+.render-sharp body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.render-sharp h1,
+.render-sharp h2,
+.render-sharp h3,
+.render-sharp h4,
+.render-sharp .section-title,
+.render-sharp .portfolio-section-title,
+.render-sharp .hero-headline,
+.render-sharp .font-heading {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-synthesis: none;
+}
+
+.render-sharp img,
+.render-sharp picture,
+.render-sharp video {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
 }
 
 .theme-surface {
@@ -350,10 +384,17 @@ video,
   filter: none !important;
 }
 
+/* GPU hint for decorative layers only — no backface-visibility (blurs text/photos) */
 .gpu-layer {
   transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+
+.cosmic-nebula.gpu-layer,
+.cosmic-moon.gpu-layer {
+  will-change: transform;
+  pointer-events: none;
 }
 
 .gold-glow {
@@ -383,6 +424,9 @@ video,
   letter-spacing: -0.025em;
   line-height: 1.08;
   color: var(--text-heading);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* DM Sans ≈ Neue Haas Grotesk (headings). Inter (body). Swap to next/font/local when licensed files are available. */
@@ -1029,8 +1073,9 @@ html[data-perf="lite"] .hero-media-parallax-inner {
 }
 
 .nav-cinematic-scrolled {
-  background: var(--nav-scrolled-bg);
-  backdrop-filter: blur(18px);
+  background: color-mix(in srgb, var(--nav-scrolled-bg) 96%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-bottom-color: var(--accent-border);
   box-shadow:
     0 8px 40px var(--shadow-color),
@@ -1061,8 +1106,9 @@ html[data-perf="lite"] .hero-media-parallax-inner {
 }
 
 .nav-logo-scrolled {
-  transform: scale(0.94);
-  transform-origin: left center;
+  transform: none;
+  font-size: 0.94em;
+  letter-spacing: 0.02em;
 }
 
 .nav-link {
@@ -1169,19 +1215,20 @@ html[data-perf="lite"] .hero-media-parallax-inner {
   opacity: 1;
 }
 
-/* ── Cinematic scroll reveals (hero-matched easing + 3D) ── */
+/* ── Scroll reveals — flat 2D only (no perspective/scale blur) ── */
 .reveal-perspective {
-  perspective: var(--reveal-perspective);
+  perspective: none;
 }
 
 .reveal-base {
   opacity: 0;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
+  transform-style: flat;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
   transition:
     opacity var(--reveal-duration) var(--ease-premium),
     transform var(--reveal-duration) var(--ease-premium);
-  will-change: opacity, transform;
+  will-change: opacity;
 }
 
 .reveal-fade-up {
@@ -1189,18 +1236,15 @@ html[data-perf="lite"] .hero-media-parallax-inner {
 }
 
 .reveal-lift {
-  transform: perspective(var(--reveal-perspective)) translate3d(0, 36px, -28px)
-    rotateX(5deg);
+  transform: translate3d(0, 36px, 0);
 }
 
 .reveal-cinematic {
-  transform: perspective(var(--reveal-perspective)) translate3d(0, 36px, -28px)
-    rotateX(4deg) scale(0.98);
+  transform: translate3d(0, 36px, 0);
 }
 
 .reveal-scale {
-  transform: perspective(var(--reveal-perspective)) translate3d(0, 28px, -16px)
-    scale(0.96) rotateX(3deg);
+  transform: translate3d(0, 28px, 0);
 }
 
 .reveal-subtle {
@@ -1217,31 +1261,16 @@ html[data-perf="lite"] .hero-media-parallax-inner {
   filter: none;
 }
 
-.reveal-fade-up.reveal-active {
+.reveal-fade-up.reveal-active,
+.reveal-lift.reveal-active,
+.reveal-cinematic.reveal-active,
+.reveal-scale.reveal-active,
+.reveal-subtle.reveal-active {
   transform: translate3d(0, 0, 0);
-}
-
-.reveal-lift.reveal-active {
-  transform: perspective(var(--reveal-perspective)) translate3d(0, 0, 10px)
-    rotateX(0deg);
-}
-
-.reveal-cinematic.reveal-active {
-  transform: perspective(var(--reveal-perspective)) translate3d(0, 0, 0)
-    rotateX(0deg) scale(1);
-}
-
-.reveal-scale.reveal-active {
-  transform: perspective(var(--reveal-perspective)) translate3d(0, 0, 18px)
-    scale(1) rotateX(0deg);
 }
 
 .reveal-fade.reveal-active {
   transform: none;
-}
-
-.reveal-subtle.reveal-active {
-  transform: translate3d(0, 0, 0);
 }
 
 .reveal-cinematic-accent {
@@ -1265,14 +1294,15 @@ html[data-perf="lite"] .hero-media-parallax-inner {
 }
 
 .reveal-stagger {
-  perspective: var(--reveal-perspective);
+  perspective: none;
 }
 
 .reveal-stagger .reveal-stagger-item {
   opacity: 0;
   transform: translate3d(0, 28px, 0);
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
+  transform-style: flat;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
   transition:
     opacity 0.85s var(--ease-premium),
     transform 0.85s var(--ease-premium);
@@ -1740,11 +1770,11 @@ html[data-perf="lite"] .hero-media-parallax-inner {
 @keyframes hero-lift-in {
   0% {
     opacity: 0;
-    transform: perspective(1200px) translate3d(0, 48px, -60px) rotateX(8deg);
+    transform: translate3d(0, 48px, 0);
   }
   100% {
     opacity: 1;
-    transform: perspective(1200px) translate3d(0, 0, 0) rotateX(0deg);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -3487,8 +3517,9 @@ html[data-perf="lite"] .hero-media-parallax-inner {
 @media (prefers-reduced-motion: no-preference) {
   .project-card,
   .process-step-card {
-    transform: translateZ(0);
-    backface-visibility: hidden;
+    transform: none;
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
   }
 }
 
@@ -3837,41 +3868,46 @@ html:not(.dark) .hero-overlay-t {
 }
 
 .cosmic-glass {
-  background: rgba(10, 16, 32, 0.55);
+  background: rgba(10, 16, 32, 0.72);
   border: 1px solid rgba(94, 234, 212, 0.12);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(94, 234, 212, 0.06);
 }
 
 .cosmic-section {
-  perspective: 1400px;
+  perspective: none;
 }
 
 .cosmic-section-inner {
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  will-change: transform, opacity;
+  transform: none;
+  transform-style: flat;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+  will-change: auto;
 }
 
 .tilt-3d {
-  transform-style: preserve-3d;
+  transform-style: flat;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
+  will-change: auto;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
 }
 
 .tilt-3d-float {
-  animation: card-idle-float 7s ease-in-out infinite;
+  animation: none;
 }
 
 @keyframes card-idle-float {
   0%,
   100% {
-    transform: perspective(900px) translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: perspective(900px) translate3d(0, -6px, 8px);
+    transform: translate3d(0, -4px, 0);
   }
 }
 
@@ -4356,7 +4392,7 @@ main {
 
 .page-transition-content-exit {
   opacity: 0;
-  transform: perspective(1400px) translate3d(0, -16px, 0) scale(0.985);
+  transform: translate3d(0, -16px, 0);
   transition:
     opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
@@ -4364,7 +4400,7 @@ main {
 
 .page-transition-content-enter {
   opacity: 0;
-  transform: perspective(1400px) translate3d(0, 28px, -24px) rotateX(3deg);
+  transform: translate3d(0, 28px, 0);
   animation: page-transition-enter 0.88s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -4376,11 +4412,11 @@ main {
 @keyframes page-transition-enter {
   0% {
     opacity: 0;
-    transform: perspective(1400px) translate3d(0, 32px, -30px) rotateX(4deg);
+    transform: translate3d(0, 32px, 0);
   }
   100% {
     opacity: 1;
-    transform: perspective(1400px) translate3d(0, 0, 0) rotateX(0deg);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -4466,7 +4502,7 @@ main {
 }
 
 .project-detail-hero-media {
-  transform: scale(1.04);
+  transform: none;
 }
 
 .project-detail-title {

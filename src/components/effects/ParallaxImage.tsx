@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
+import { IMAGE_DEFAULTS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
 import { cn } from "@/lib/utils";
 
 interface ParallaxImageProps {
@@ -26,6 +26,8 @@ export function ParallaxImage({
         fill
         loading="lazy"
         quality={quality}
+        unoptimized={IMAGE_DEFAULTS.unoptimized}
+        decoding={IMAGE_DEFAULTS.decoding}
         sizes={IMAGE_SIZES.half}
         className="crisp-image object-cover"
       />

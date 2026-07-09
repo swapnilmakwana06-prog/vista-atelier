@@ -8,7 +8,7 @@ import {
   heroVideoWebm,
   hasHeroVideo,
 } from "@/lib/data";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
+import { IMAGE_DEFAULTS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
 
@@ -73,6 +73,8 @@ export function VideoHero() {
           priority
           fetchPriority="high"
           quality={IMAGE_QUALITY.hero}
+          unoptimized={IMAGE_DEFAULTS.unoptimized}
+          decoding={IMAGE_DEFAULTS.decoding}
           sizes={IMAGE_SIZES.hero}
           className={cn(
             "crisp-image object-cover transition-opacity duration-700 ease-out",

@@ -10,7 +10,7 @@ import {
   studioVideoSrc,
   studioVideoWebm,
 } from "@/lib/data";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
+import { IMAGE_DEFAULTS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
 import { usePerformanceMode } from "@/hooks/usePerformanceMode";
 import { cn } from "@/lib/utils";
 
@@ -77,6 +77,8 @@ export function StudioFilm() {
           fill
           loading="lazy"
           quality={IMAGE_QUALITY.featured}
+          unoptimized={IMAGE_DEFAULTS.unoptimized}
+          decoding={IMAGE_DEFAULTS.decoding}
           className={cn(
             "crisp-image object-cover",
             showPoster ? "opacity-100" : "opacity-0"

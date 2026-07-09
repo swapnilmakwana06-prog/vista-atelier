@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { CinematicImageFrame } from "@/components/ui/CinematicImageFrame";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
+import { IMAGE_DEFAULTS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
 import type { Project } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -33,6 +33,8 @@ export function ProjectDetail({ project, prev, next }: ProjectDetailProps) {
             fill
             priority
             quality={IMAGE_QUALITY.hero}
+            unoptimized={IMAGE_DEFAULTS.unoptimized}
+            decoding={IMAGE_DEFAULTS.decoding}
             sizes={IMAGE_SIZES.hero}
             className="crisp-image object-cover"
           />

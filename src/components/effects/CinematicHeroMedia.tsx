@@ -8,7 +8,7 @@ import {
   heroVideoWebm,
   hasHeroVideo,
 } from "@/lib/data";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
+import { IMAGE_DEFAULTS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/utils";
 
@@ -116,6 +116,8 @@ export function CinematicHeroMedia() {
             priority
             fetchPriority="high"
             quality={IMAGE_QUALITY.hero}
+            unoptimized={IMAGE_DEFAULTS.unoptimized}
+            decoding={IMAGE_DEFAULTS.decoding}
             sizes={IMAGE_SIZES.hero}
             className={cn(
               "hero-desktop-poster crisp-image object-cover object-[center_20%] transition-opacity duration-1000 ease-out",

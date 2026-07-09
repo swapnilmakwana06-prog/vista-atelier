@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
+import { IMAGE_DEFAULTS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
 import type { Project } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -52,9 +52,9 @@ export function Lightbox({ project, onClose }: LightboxProps) {
 
           <motion.div
             className="project-detail-modal-panel relative grid max-h-[92vh] w-full max-w-6xl grid-cols-1 gap-0 overflow-hidden lg:grid-cols-2"
-            initial={{ scale: 0.96, opacity: 0, y: 28 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.96, opacity: 0, y: 28 }}
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 28 }}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
             data-lenis-prevent
@@ -63,8 +63,8 @@ export function Lightbox({ project, onClose }: LightboxProps) {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, scale: 1.04 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.6 }}
                   className="absolute inset-0"
@@ -74,6 +74,8 @@ export function Lightbox({ project, onClose }: LightboxProps) {
                     alt={project.title}
                     fill
                     quality={IMAGE_QUALITY.hero}
+                    unoptimized={IMAGE_DEFAULTS.unoptimized}
+                    decoding={IMAGE_DEFAULTS.decoding}
                     priority
                     className="crisp-image object-cover"
                     sizes={IMAGE_SIZES.half}

@@ -85,8 +85,7 @@ export function ScrollReveal({
     <div
       ref={ref}
       className={cn(
-        "reveal-base gpu-layer",
-        CINEMATIC_VARIANTS.has(activeVariant) && "reveal-perspective",
+        "reveal-base",
         variantClass[activeVariant],
         accent && variant === "cinematic" && "reveal-cinematic-accent",
         className

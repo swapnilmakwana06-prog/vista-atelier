@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { journalArticles } from "@/lib/data";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
+import { IMAGE_DEFAULTS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
 import { CosmicSection } from "@/components/ui/CosmicSection";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 export function Journal() {
@@ -30,6 +30,8 @@ export function Journal() {
                     fill
                     loading="lazy"
                     quality={IMAGE_QUALITY.default}
+                    unoptimized={IMAGE_DEFAULTS.unoptimized}
+                    decoding={IMAGE_DEFAULTS.decoding}
                     className="crisp-image object-cover"
                     sizes={IMAGE_SIZES.journal}
                   />

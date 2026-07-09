@@ -11,6 +11,7 @@ interface Tilt3DProps {
   float?: boolean;
 }
 
+/** Subtle 2D lift on hover/scroll — no perspective (keeps text/images sharp). */
 export function Tilt3D({
   children,
   className,
@@ -21,7 +22,6 @@ export function Tilt3D({
   const { preferLite, reduced } = usePerformanceMode();
   const state = useRef({
     hovering: false,
-    scrollZ: 0,
     scrollY: 0,
     tiltX: 0,
     tiltY: 0,
@@ -38,12 +38,12 @@ export function Tilt3D({
 
     const applyTransform = (time = 0) => {
       const s = state.current;
-      const idleY = float ? Math.sin(time * 0.001 + s.phase) * 5 : 0;
-      const idleZ = float ? Math.sin(time * 0.0008 + s.phase) * 4 : 0;
+      const idleY = float ? Math.sin(time * 0.001 + s.phase) * 3 : 0;
 
       if (s.hovering) return;
 
-      el.style.transform = `perspective(900px) rotateY(${s.tiltY}deg) rotateX(${s.tiltX}deg) translateZ(${s.scrollZ + idleZ}px) translateY(${s.scrollY + idleY}px)`;
+      const y = s.scrollY + idleY;
+      el.style.transform = `translate3d(0, ${y}px, 0)`;
     };
 
     const onScroll = () => {
@@ -55,8 +55,7 @@ export function Tilt3D({
         const center = rect.top + rect.height / 2;
         const progress = 1 - Math.abs(center - vh / 2) / (vh * 0.6);
         const clamped = Math.max(0, Math.min(1, progress));
-        state.current.scrollZ = clamped * 16;
-        state.current.scrollY = (1 - clamped) * 6;
+        state.current.scrollY = (1 - clamped) * 4;
         state.current.tiltX = 0;
         state.current.tiltY = 0;
         applyTransform(performance.now());
@@ -87,9 +86,9 @@ export function Tilt3D({
     const rect = el.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
-    s.tiltY = x * intensity;
-    s.tiltX = -y * intensity;
-    el.style.transform = `perspective(900px) rotateY(${s.tiltY}deg) rotateX(${s.tiltX}deg) translateZ(${s.scrollZ + 12}px)`;
+    s.tiltY = x * intensity * 0.35;
+    s.tiltX = -y * intensity * 0.35;
+    el.style.transform = `translate3d(${s.tiltY}px, ${s.tiltX}px, 0)`;
   };
 
   const handleLeave = () => {
@@ -107,7 +106,7 @@ export function Tilt3D({
       ref={ref}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      className={cn("tilt-3d gpu-layer", className)}
+      className={cn("tilt-3d", className)}
     >
       {children}
     </div>
