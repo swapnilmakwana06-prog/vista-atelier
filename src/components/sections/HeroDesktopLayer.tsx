@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useIsDesktop } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
@@ -13,30 +13,19 @@ const CinematicHeroMedia = dynamic(
   { ssr: false }
 );
 
-interface HeroClientLayerProps {
-  contentRef: React.RefObject<HTMLDivElement | null>;
-  hintRef: React.RefObject<HTMLDivElement | null>;
-}
-
-export function HeroDesktopMedia() {
-  const isDesktop = useIsDesktop();
-  if (!isDesktop) return null;
-  return (
-    <div className="absolute inset-0 hidden lg:block">
-      <CinematicHeroMedia />
-    </div>
-  );
-}
-
-export function HeroScrollEffects({ contentRef, hintRef }: HeroClientLayerProps) {
+/** Desktop-only hero video + scroll parallax — never loads on mobile */
+export function HeroDesktopLayer() {
   const isDesktop = useIsDesktop();
   const reduced = useReducedMotion();
 
   useEffect(() => {
     if (reduced || !isDesktop) return;
-    const content = contentRef.current;
-    const hint = hintRef.current;
+
+    const content = document.getElementById("hero-content");
+    const hint = document.getElementById("hero-scroll-hint");
     if (!content) return;
+
+    content.classList.add("gpu-layer");
 
     let ticking = false;
 
@@ -60,8 +49,19 @@ export function HeroScrollEffects({ contentRef, hintRef }: HeroClientLayerProps)
 
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [reduced, isDesktop, contentRef, hintRef]);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      content.style.opacity = "";
+      content.style.transform = "";
+      content.classList.remove("gpu-layer");
+    };
+  }, [reduced, isDesktop]);
 
-  return null;
+  if (!isDesktop) return null;
+
+  return (
+    <div className="absolute inset-0 hidden lg:block">
+      <CinematicHeroMedia />
+    </div>
+  );
 }

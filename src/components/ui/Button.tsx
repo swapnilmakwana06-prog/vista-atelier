@@ -20,19 +20,20 @@ export function Button({
   onClick,
 }: ButtonProps) {
   const base = cn(
-    "group relative inline-flex items-center justify-center overflow-hidden px-8 py-4 text-sm tracking-[0.2em] uppercase transition-[transform,opacity] duration-200 touch-manipulation hover:scale-[1.02] active:scale-[0.97] active:opacity-90",
-    variant === "gold"
-      ? "bg-gold font-medium text-btn-on-gold"
-      : "border border-gold/60 bg-transparent text-gold-accessible hover:bg-gold/5",
+    "btn-premium touch-manipulation",
+    variant === "gold" ? "btn-premium-gold" : "btn-premium-outline",
     className
   );
 
   const content = (
     <>
+      {variant === "gold" && <span className="btn-premium-shine" aria-hidden />}
+      <span className="btn-premium-label">{children}</span>
       {variant === "gold" && (
-        <span className="absolute inset-0 -translate-x-full bg-foreground transition-transform duration-500 ease-out group-hover:translate-x-0" />
+        <span className="btn-premium-arrow" aria-hidden>
+          →
+        </span>
       )}
-      <span className="relative z-10">{children}</span>
     </>
   );
 

@@ -19,7 +19,7 @@ function getInitialLite(): boolean {
 }
 
 export function usePerformanceMode() {
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const isTouch = useMediaQuery("(pointer: coarse)");
   const isTablet = useMediaQuery("(max-width: 1023px)");
   const reduced = useReducedMotion();
@@ -38,12 +38,7 @@ export function usePerformanceMode() {
   }, []);
 
   const preferLite =
-    bootLite ||
-    isMobile ||
-    (isTouch && isTablet) ||
-    reduced ||
-    saveData ||
-    lowEnd;
+    bootLite || isTablet || reduced || saveData || lowEnd;
 
   return {
     isMobile,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { contactInfo } from "@/lib/data";
+import { contactInfo, sectionCopy } from "@/lib/data";
 import { Button } from "@/components/ui/Button";
 import { PortfolioHeader } from "@/components/ui/PortfolioHeader";
 import { CosmicSection } from "@/components/ui/CosmicSection";
@@ -26,30 +26,32 @@ export function Contact() {
   return (
     <CosmicSection
       id="contact"
-      className="contact-section portfolio-section section-padding"
+      className="contact-section luxury-section portfolio-section section-padding-luxury"
     >
       <div className="portfolio-atmosphere" aria-hidden>
         <div className="portfolio-god-rays" />
         <div className="portfolio-gold-wash" />
       </div>
 
+      <div className="luxury-section-rule" aria-hidden />
+
       <div className="relative z-[1] mx-auto max-w-[1600px]">
-        <ScrollReveal variant="cinematic" accent className="mb-16">
+        <ScrollReveal variant="cinematic" accent className="mb-16 md:mb-20">
           <PortfolioHeader
-            label="Get in Touch"
-            title="Begin Your"
-            highlight="Project"
-            description="Every extraordinary space begins with a conversation. Share your vision, and let us craft an atmosphere worthy of it."
+            label={sectionCopy.contact.label}
+            title={sectionCopy.contact.title}
+            highlight={sectionCopy.contact.highlight}
+            description={sectionCopy.contact.description}
           />
         </ScrollReveal>
 
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-20">
           <RevealStagger className="lg:col-span-5">
-            <div className="reveal-stagger-item contact-info-card">
+            <div className="reveal-stagger-item contact-info-card contact-info-card-luxury">
               <div className="contact-info-line mb-6 h-px w-14 bg-gradient-to-r from-cyan via-gold to-transparent" />
               <p className="contact-info-lead">
                 We welcome inquiries for residential, commercial, and hospitality
-                commissions worldwide.
+                commissions worldwide — from first concept to final reveal.
               </p>
             </div>
 
@@ -88,10 +90,18 @@ export function Contact() {
                 )}
               </div>
             ))}
+
+            <div className="reveal-stagger-item contact-studio-panel mt-10">
+              <span className="hero-premium-label mb-3 block">Atelier Promise</span>
+              <p className="contact-studio-panel-text">
+                Every inquiry receives a personal response within 48 hours. Your
+                vision deserves our full attention.
+              </p>
+            </div>
           </RevealStagger>
 
           <ScrollReveal variant="scale" delay={120} className="lg:col-span-7">
-            <div className="contact-form-panel">
+            <div className="contact-form-panel contact-form-panel-luxury">
               {submitted ? (
                 <div className="contact-success">
                   <div className="contact-success-line mb-8 h-px w-16 bg-gradient-to-r from-cyan via-gold to-transparent" />
@@ -112,7 +122,10 @@ export function Contact() {
                       { name: "email", label: "Email Address", type: "email" },
                     ].map((field) => (
                       <div key={field.name} className="contact-field">
-                        <label htmlFor={field.name} className="hero-premium-label mb-3 block">
+                        <label
+                          htmlFor={field.name}
+                          className="hero-premium-label mb-3 block"
+                        >
                           {field.label}
                         </label>
                         <input
@@ -165,6 +178,15 @@ export function Contact() {
             </div>
           </ScrollReveal>
         </div>
+
+        <ScrollReveal variant="fade" delay={200} className="mt-16 md:mt-20">
+          <div className="contact-cta-strip">
+            <p className="contact-cta-strip-text">{sectionCopy.contact.ctaStrip}</p>
+            <a href={`mailto:${contactInfo.email}`} className="contact-cta-strip-link">
+              {contactInfo.email}
+            </a>
+          </div>
+        </ScrollReveal>
       </div>
     </CosmicSection>
   );

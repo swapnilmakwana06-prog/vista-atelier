@@ -32,7 +32,10 @@ export const Navigation = memo(function Navigation() {
       >
         <div className="nav-accent-line" aria-hidden />
 
-        <nav className="nav-inner mx-auto flex max-w-[1600px] items-center justify-between px-6 py-5 lg:px-12">
+        <nav
+          className="nav-inner mx-auto flex max-w-[1600px] items-center justify-between px-6 lg:px-12"
+          aria-label="Primary navigation"
+        >
           <a
             href="#"
             className={cn(

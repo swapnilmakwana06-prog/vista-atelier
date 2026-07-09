@@ -29,6 +29,31 @@ export const philosophyMaterials = [
   "Bouclé Linen",
 ];
 
+export const philosophyContent = {
+  label: "Philosophy",
+  title: "Design is not decoration. It is",
+  highlight: "the architecture of feeling.",
+  description:
+    "At VISTA Atelier, we compose environments where negative space breathes, materials age with grace, and every silhouette is measured against emotion — not trend.",
+  quote: "We do not fill rooms. We compose atmospheres.",
+  pillars: [
+    {
+      title: "Material Honesty",
+      text: "Stone, wood, and metal chosen for how they catch light — never for novelty alone.",
+    },
+    {
+      title: "Cinematic Proportion",
+      text: "Every axis calibrated to create pause, discovery, and quiet drama.",
+    },
+    {
+      title: "Bespoke Permanence",
+      text: "Spaces conceived to feel inevitable today and treasured for decades.",
+    },
+  ],
+  primaryImage: img("photo-1600607687939-ce8a6c25118c", 1920),
+  accentImage: img("photo-1618221195710-dd6b41faaea6", 1200),
+} as const;
+
 export const socialLinks = [
   { label: "Instagram", href: "https://instagram.com" },
   { label: "Pinterest", href: "https://pinterest.com" },
@@ -37,10 +62,9 @@ export const socialLinks = [
 
 export const navLinks = [
   { label: "Philosophy", href: "#philosophy" },
-  { label: "Expertise", href: "#expertise" },
   { label: "Projects", href: "#projects" },
   { label: "Process", href: "#process" },
-  { label: "Journal", href: "#journal" },
+  { label: "Testimonials", href: "#testimonials" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -181,6 +205,9 @@ export const projects: Project[] = [
   },
 ];
 
+/** Curated signature portfolio — 8 editorial projects */
+export const signatureProjects = projects;
+
 export const selectedWorks = projects.slice(0, 4);
 
 export const processSteps: ProcessStep[] = [
@@ -246,7 +273,56 @@ export const testimonials: Testimonial[] = [
     role: "CEO, Meridian Group",
     location: "London",
   },
+  {
+    id: "4",
+    quote:
+      "Rarely does a studio understand restraint as a form of luxury. Our villa feels sculpted by light itself — serene, sensual, and utterly singular.",
+    author: "Sofia Laurent",
+    role: "Art Collector",
+    location: "Geneva",
+  },
+  {
+    id: "5",
+    quote:
+      "From first sketch to final reveal, the experience felt bespoke in every sense. The headquarters now embodies our brand without uttering a word.",
+    author: "Marcus Chen",
+    role: "Founder, Chen Capital",
+    location: "Dubai",
+  },
 ];
+
+export const sectionCopy = {
+  projects: {
+    label: "Signature Projects",
+    title: "Interiors That",
+    highlight: "Define an Era",
+    description:
+      "Eight commissions across residential, hospitality, and commercial — each a study in proportion, material, and the quiet theatre of light.",
+  },
+  process: {
+    label: "Our Process",
+    title: "From Vision to",
+    highlight: "Revelation",
+    description:
+      "Five deliberate phases guided by architectural rigor, material honesty, and the pursuit of spaces that feel inevitable.",
+  },
+  testimonials: {
+    label: "Client Testimonials",
+    title: "Voices of",
+    highlight: "Distinction",
+    description:
+      "The trust of discerning clients across Manhattan, Paris, London, and beyond — each space a testament to quiet luxury.",
+  },
+  contact: {
+    label: "Begin the Conversation",
+    title: "Your Next",
+    highlight: "Masterpiece",
+    description:
+      "Every extraordinary environment begins with intention. Share your vision — we will craft an atmosphere worthy of it.",
+    ctaStrip:
+      "Commission a space that feels inevitable. Private consultations available worldwide.",
+  },
+} as const;
 
 export const journalArticles: JournalArticle[] = [
   {
@@ -278,6 +354,18 @@ export const journalArticles: JournalArticle[] = [
 export const heroFallbackImage = img("photo-1618221195710-dd6b41faaea6", 3840);
 export const heroPoster = "/hero-poster.jpg";
 
+export const heroCopy = {
+  label: "Bespoke Interior Atelier",
+  headlineLead: "Spaces Sculpted for",
+  headlineEmphasis: "Quiet Opulence",
+  subheadline:
+    "We compose rarefied interiors where light, material, and proportion converge — environments that feel inevitable, intimate, and unmistakably yours.",
+  credentials: "Manhattan · Paris · Milan",
+  ctaPrimary: "Explore Signature Work",
+  ctaSecondary: "Request Private Consultation",
+  scrollHint: "Discover the Atelier",
+} as const;
+
 export const fallbackProjectImage = img("photo-1616486338812-3dadae4b4ace", 1200);
 export const heroVideoSrc =
   process.env.NEXT_PUBLIC_HERO_VIDEO_URL ?? "/hero-video.mp4";
@@ -288,3 +376,9 @@ export const heroVideoMobile =
   process.env.NEXT_PUBLIC_HERO_VIDEO_MOBILE_URL ?? "/hero-video.mp4";
 
 export const hasHeroVideo = true;
+
+export const studioVideoSrc =
+  process.env.NEXT_PUBLIC_STUDIO_VIDEO_URL ?? "/hero-video.mp4";
+export const studioVideoWebm =
+  process.env.NEXT_PUBLIC_STUDIO_VIDEO_WEBM_URL ?? "/hero-video.webm";
+export const hasStudioVideo = true;

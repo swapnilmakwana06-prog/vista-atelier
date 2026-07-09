@@ -1,16 +1,24 @@
 {
   "name": "VISTA Atelier",
   "short_name": "VISTA",
-  "description": "Luxury interior design studio crafting timeless spaces.",
+  "description": "Luxury interior design studio crafting timeless, cinematic spaces.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#080808",
-  "theme_color": "#080808",
+  "background_color": "#04060f",
+  "theme_color": "#04060f",
+  "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "48x48",
-      "type": "image/x-icon"
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }

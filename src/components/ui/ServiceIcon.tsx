@@ -3,62 +3,55 @@ interface ServiceIconProps {
   className?: string;
 }
 
-export function ServiceIcon({ name, className = "w-8 h-8" }: ServiceIconProps) {
+const stroke = {
+  stroke: "currentColor",
+  strokeWidth: 1.15,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+  fill: "none",
+};
+
+export function ServiceIcon({ name, className = "w-5 h-5" }: ServiceIconProps) {
   const icons: Record<string, React.ReactNode> = {
-    home: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={className}>
-        <path d="M3 10.5L12 3l9 7.5V21H3z" />
-        <path d="M9 21V12h6v9" />
+    residential: (
+      <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+        <path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-9.5z" {...stroke} />
+        <path d="M9 21v-4h6v4" {...stroke} />
       </svg>
     ),
-    building: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={className}>
-        <rect x="4" y="2" width="16" height="20" />
-        <path d="M9 6h2M13 6h2M9 10h2M13 10h2M9 14h2M13 14h2M9 18h6" />
+    commercial: (
+      <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+        <path d="M5 21V5a1 1 0 011-1h12a1 1 0 011 1v16" {...stroke} />
+        <path d="M9 7h2M9 11h2M9 15h2M13 7h2M13 11h2M13 15h2" {...stroke} />
+        <path d="M3 21h18" {...stroke} />
       </svg>
     ),
-    key: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={className}>
-        <circle cx="8" cy="8" r="4" />
-        <path d="M12 8h10M18 8v3M15 8v2" />
+    hospitality: (
+      <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+        <path d="M4 10h16v11H4z" {...stroke} />
+        <path d="M2 21h20" {...stroke} />
+        <path d="M8 10V7a4 4 0 018 0v3" {...stroke} />
+        <path d="M12 14v3" {...stroke} />
       </svg>
     ),
-    compass: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={className}>
-        <circle cx="12" cy="12" r="10" />
-        <path d="M16 8l-2.5 7.5L8 16l2.5-7.5z" />
+    consultation: (
+      <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+        <path d="M12 3a7 7 0 00-4 12.7V19l4-2 4 2v-3.3A7 7 0 0012 3z" {...stroke} />
+        <path d="M9.5 14.5h5" {...stroke} />
       </svg>
     ),
-    search: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={className}>
-        <circle cx="11" cy="11" r="7" />
-        <path d="M16 16l5 5" />
+    styling: (
+      <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+        <path d="M12 3l1.8 5.5H19l-4.6 3.3 1.8 5.5L12 14l-4.2 3.3 1.8-5.5L5 8.5h5.2L12 3z" {...stroke} />
       </svg>
     ),
-    layers: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={className}>
-        <path d="M12 2l9 5-9 5-9-5 9-5z" />
-        <path d="M3 12l9 5 9-5M3 17l9 5 9-5" />
-      </svg>
-    ),
-    pen: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={className}>
-        <path d="M4 20l4-1 9-9-3-3-9 9-1 4z" />
-        <path d="M14 5l3 3" />
-      </svg>
-    ),
-    hammer: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={className}>
-        <path d="M14 4l6 6-4 4-6-6 4-4z" />
-        <path d="M3 21l7-7" />
-      </svg>
-    ),
-    star: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={className}>
-        <path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z" />
+    renovation: (
+      <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+        <path d="M14.7 6.3a1 1 0 000 1.4l-7.8 7.8a2 2 0 001.4 3.4h.1l3.5-1 6.9-6.9a1 1 0 00-1.4-1.4l-6.9 6.9-1-3.5a2 2 0 00-3.4-1.4l7.8-7.8z" {...stroke} />
+        <path d="M3 21h7" {...stroke} />
       </svg>
     ),
   };
 
-  return <>{icons[name] ?? icons.compass}</>;
+  return icons[name] ?? icons.consultation;
 }

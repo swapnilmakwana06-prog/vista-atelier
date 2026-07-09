@@ -1,130 +1,136 @@
-import type { Metadata } from "next";
-import { DM_Sans, Inter } from "next/font/google";
-import { ClientShell } from "@/components/providers/ClientShell";
+import type { Metadata, Viewport } from "next";
+import { Cormorant_Garamond, Inter } from "next/font/google";
+import { siteConfig, absoluteUrl } from "@/lib/seo";
 import "./globals.css";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vistaatelier.com";
-
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-cormorant",
   display: "swap",
 });
 
 const inter = Inter({
-  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-inter",
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: "VISTA Atelier | Crafting Timeless Spaces That Whisper Luxury",
-    template: "%s | VISTA Atelier",
-  },
-  description:
-    "Award-winning luxury interior design studio crafting cinematic, timeless spaces with architectural precision and quiet sophistication.",
-  keywords: [
-    "luxury interior design",
-    "interior design studio",
-    "residential interiors",
-    "hospitality design",
-    "bespoke interiors",
-    "VISTA Atelier",
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#04060f" },
+    { media: "(prefers-color-scheme: light)", color: "#04060f" },
   ],
-  authors: [{ name: "VISTA Atelier" }],
-  creator: "VISTA Atelier",
-  robots: {
-    index: true,
-    follow: true,
+  colorScheme: "dark",
+};
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.name}`,
   },
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
+  authors: [{ name: siteConfig.name, url: siteConfig.url }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  category: "Interior Design",
+  keywords: siteConfig.keywords,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: "/",
+  },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: "/icon.svg",
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
-    locale: "en_US",
-    url: siteUrl,
-    siteName: "VISTA Atelier",
-    title: "VISTA Atelier | Crafting Timeless Spaces That Whisper Luxury",
-    description:
-      "Award-winning luxury interior design studio crafting cinematic, timeless spaces with architectural precision and quiet sophistication.",
+    locale: siteConfig.locale,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title: siteConfig.title,
+    description: siteConfig.description,
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "VISTA Atelier — luxury interior design studio",
+        alt: `${siteConfig.name} — luxury interior design studio`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "VISTA Atelier",
-    description: "Crafting Timeless Spaces That Whisper Luxury",
+    title: siteConfig.title,
+    description: siteConfig.description,
     images: ["/og-image.jpg"],
+    creator: siteConfig.twitterHandle,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: siteConfig.shortName,
   },
 };
-
-const themeScript = `
-(function() {
-  try {
-    var t = localStorage.getItem('vista-theme');
-    document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
-  } catch (e) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-  }
-})();
-`;
-
-const perfScript = `
-(function() {
-  try {
-    var lite = window.matchMedia('(max-width: 767px)').matches
-      || window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      || (window.matchMedia('(pointer: coarse)').matches && window.matchMedia('(max-width: 1023px)').matches);
-    if (lite) {
-      document.documentElement.dataset.perf = 'lite';
-      document.documentElement.dataset.mobile = 'true';
-    }
-  } catch (e) {}
-})();
-`;
-
-const loaderScript = `
-(function() {
-  try {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    document.documentElement.dataset.loading = 'true';
-    document.body.style.overflow = 'hidden';
-  } catch (e) {}
-})();
-`;
-
-const loaderCriticalCss = `
-#vista-initial-loader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#020308;-webkit-transform:translateZ(0);transform:translateZ(0)}
-#vista-initial-loader .vista-loader-bg{position:absolute;inset:0;background:radial-gradient(ellipse 130% 90% at 50% 20%,#0a0e18 0%,#04060f 40%,#020308 70%,#000 100%)}
-#vista-initial-loader .vista-loader-stage{display:flex;flex-direction:column;align-items:center;text-align:center;padding:2rem;position:relative;z-index:2;animation:vista-loader-in 1s cubic-bezier(.16,1,.3,1) forwards}
-#vista-initial-loader .vista-loader-logo{font-family:var(--font-dm-sans),system-ui,sans-serif;font-size:clamp(2.25rem,7vw,4rem);font-weight:500;letter-spacing:.16em;line-height:1.1;margin:0}
-#vista-initial-loader .vista-loader-logo-vista{color:#f5f0e8;text-shadow:0 2px 0 rgba(212,175,126,.15),0 8px 32px rgba(0,0,0,.5)}
-#vista-initial-loader .vista-loader-logo-atelier{background:linear-gradient(120deg,#e8c896,#d4af7e 30%,#f5e6c8 50%,#d4af7e 70%,#5eead4);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 24px rgba(212,175,126,.35))}
-#vista-initial-loader .vista-loader-tagline{margin-top:1.5rem;font-size:11px;letter-spacing:.38em;text-transform:uppercase;color:rgba(245,240,232,.55);opacity:0;animation:vista-tagline-in 1.2s cubic-bezier(.16,1,.3,1) .5s forwards}
-#vista-initial-loader .vista-loader-bar{margin-top:2.75rem;width:min(220px,55vw);height:1px;background:rgba(212,175,126,.12);overflow:hidden}
-#vista-initial-loader .vista-loader-bar-fill{height:100%;width:40%;background:linear-gradient(to right,rgba(94,234,212,.4),#d4af7e 50%,#f5e6c8);box-shadow:0 0 16px rgba(212,175,126,.45);animation:vista-bar-pulse 1.8s ease-in-out infinite}
-@keyframes vista-loader-in{from{opacity:0;transform:perspective(1400px) translate3d(0,24px,-30px) rotateX(8deg)}to{opacity:1;transform:perspective(1400px) translate3d(0,0,0) rotateX(0)}}
-@keyframes vista-tagline-in{from{opacity:0;transform:translate3d(0,12px,0)}to{opacity:.85;transform:translate3d(0,0,0)}}
-@keyframes vista-bar-pulse{0%,100%{transform:scaleX(.25);opacity:.6}50%{transform:scaleX(.75);opacity:1}}
-@media(prefers-reduced-motion:reduce){#vista-initial-loader{display:none}}
-`;
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "InteriorDesigner",
-  name: "VISTA Atelier",
-  url: siteUrl,
-  description:
-    "Award-winning luxury interior design studio crafting cinematic, timeless spaces.",
-  image: `${siteUrl}/og-image.jpg`,
+  "@id": `${siteConfig.url}/#organization`,
+  name: siteConfig.name,
+  url: siteConfig.url,
+  logo: absoluteUrl("/icon.svg"),
+  image: absoluteUrl("/og-image.jpg"),
+  description: siteConfig.description,
+  email: siteConfig.email,
+  telephone: siteConfig.phone,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: siteConfig.address.street,
+    addressLocality: siteConfig.address.city,
+    addressRegion: siteConfig.address.region,
+    postalCode: siteConfig.address.postalCode,
+    addressCountry: siteConfig.address.country,
+  },
+  areaServed: ["New York", "London", "Dubai", "Geneva", "Miami"],
+  priceRange: "$$$$",
+  sameAs: [],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${siteConfig.url}/#website`,
+  name: siteConfig.name,
+  url: siteConfig.url,
+  description: siteConfig.description,
+  publisher: { "@id": `${siteConfig.url}/#organization` },
+  inLanguage: siteConfig.locale,
 };
 
 export default function RootLayout({
@@ -133,39 +139,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${cormorant.variable} ${inter.variable} scroll-smooth`}
+      suppressHydrationWarning
+    >
       <head>
-        <link
-          rel="preload"
-          as="image"
-          href="/hero-poster.jpg"
-          fetchPriority="high"
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var m=window.matchMedia('(max-width:1023px)'),t=window.matchMedia('(pointer:coarse)'),r=window.matchMedia('(prefers-reduced-motion:reduce)');if(m.matches||t.matches||r.matches)document.documentElement.setAttribute('data-perf','lite');}catch(e){}})();`,
+          }}
         />
-        <style dangerouslySetInnerHTML={{ __html: loaderCriticalCss }} />
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <script dangerouslySetInnerHTML={{ __html: perfScript }} />
-        <script dangerouslySetInnerHTML={{ __html: loaderScript }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([organizationJsonLd, websiteJsonLd]),
+          }}
         />
-        <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body className="theme-surface font-sans antialiased">
-        <div id="vista-initial-loader" aria-live="polite" aria-label="Loading VISTA Atelier">
-          <div className="vista-loader-bg" aria-hidden />
-          <div className="vista-loader-stage">
-            <h1 className="vista-loader-logo">
-              <span className="vista-loader-logo-vista">VISTA</span>{" "}
-              <span className="vista-loader-logo-atelier">Atelier</span>
-            </h1>
-            <p className="vista-loader-tagline">Crafting Timeless Spaces</p>
-            <div className="vista-loader-bar" aria-hidden>
-              <div className="vista-loader-bar-fill" />
-            </div>
-          </div>
-        </div>
-        <ClientShell>{children}</ClientShell>
+      <body className="bg-background text-foreground antialiased">
+        <a href="#main-content" className="skip-to-content">
+          Skip to main content
+        </a>
+        {children}
       </body>
     </html>
   );

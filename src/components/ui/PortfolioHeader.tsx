@@ -25,13 +25,13 @@ export function PortfolioHeader({
       <div className="portfolio-header-accent" aria-hidden />
       <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
-          <p className="hero-premium-label mb-5">{label}</p>
+          <p className="hero-premium-label mb-6">{label}</p>
           <h2 className="portfolio-section-title text-balance">
             {title}{" "}
             <span className="hero-gold-shimmer">{highlight}</span>
           </h2>
           {description && (
-            <p className="portfolio-section-desc mt-5 max-w-xl">{description}</p>
+            <p className="portfolio-section-desc mt-6 max-w-xl leading-relaxed">{description}</p>
           )}
         </div>
         {children}

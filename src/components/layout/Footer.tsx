@@ -8,15 +8,16 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="footer-section portfolio-section relative z-[1]">
+    <footer className="footer-section luxury-section portfolio-section relative z-[1] section-padding-luxury">
       <div className="portfolio-atmosphere portfolio-atmosphere-alt" aria-hidden>
         <div className="portfolio-gold-wash" />
         <div className="footer-glow" />
       </div>
 
+      <div className="luxury-section-rule" aria-hidden />
       <div className="footer-top-accent" aria-hidden />
 
-      <div className="relative z-[1] section-padding pb-12">
+      <div className="relative z-[1] pb-8 md:pb-12">
         <div className="mx-auto max-w-[1600px]">
           <ScrollReveal variant="cinematic" className="footer-cta mb-20">
             <div className="footer-cta-panel">

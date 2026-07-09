@@ -26,10 +26,10 @@ export const ProjectCard = memo(function ProjectCard({
   }[project.aspect];
 
   return (
-    <Tilt3D intensity={14}>
+    <Tilt3D intensity={12}>
       <Link
         href={`/projects/${project.id}`}
-        className="portfolio-card group relative mb-6 block cursor-pointer break-inside-avoid"
+        className="portfolio-card portfolio-card-premium group relative mb-7 block cursor-pointer break-inside-avoid"
         data-cursor="hover"
       >
         <div
@@ -43,13 +43,14 @@ export const ProjectCard = memo(function ProjectCard({
             alt={project.title}
             priority={priority}
             sizes={IMAGE_SIZES.project}
-            className="portfolio-card-image transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
+            className="portfolio-card-image"
           />
 
           <div className="portfolio-card-scrim absolute inset-0" />
           <div className="portfolio-card-gold-wash absolute inset-0" />
           <div className="portfolio-card-vignette absolute inset-0" />
           <div className="portfolio-card-shine absolute inset-0" />
+          <div className="portfolio-card-border-glow absolute inset-0" aria-hidden />
 
           {typeof index === "number" && (
             <span className="portfolio-card-index" aria-hidden>
@@ -57,15 +58,21 @@ export const ProjectCard = memo(function ProjectCard({
             </span>
           )}
 
-          <div className="absolute inset-x-0 bottom-0 z-10 p-7">
-            <div className="portfolio-card-line mb-4 h-px w-12 bg-gradient-to-r from-cyan via-gold to-transparent transition-all duration-700 ease-out group-hover:w-20" />
-            <p className="mb-1.5 text-[10px] tracking-[0.28em] text-cyan/90 uppercase">
+          <span className="portfolio-card-arrow" aria-hidden>
+            →
+          </span>
+
+          <div className="portfolio-card-content absolute inset-x-0 bottom-0 z-10 p-7">
+            <div className="portfolio-card-line mb-4 h-px w-12 bg-gradient-to-r from-cyan via-gold to-transparent" />
+            <p className="portfolio-card-meta mb-1.5 text-[10px] tracking-[0.28em] text-cyan/90 uppercase">
               {project.category} · {project.year}
             </p>
-            <h3 className="font-heading text-2xl leading-tight text-heading transition-transform duration-500 ease-out group-hover:translate-x-1 md:text-[1.65rem]">
+            <h3 className="portfolio-card-title font-heading text-2xl leading-tight text-heading md:text-[1.65rem]">
               {project.title}
             </h3>
-            <p className="mt-1.5 text-sm text-secondary/90">{project.location}</p>
+            <p className="portfolio-card-location mt-1.5 text-sm text-secondary/90">
+              {project.location}
+            </p>
           </div>
         </div>
       </Link>

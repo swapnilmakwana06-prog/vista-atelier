@@ -10,7 +10,8 @@ export type ScrollRevealVariant =
   | "scale"
   | "fade"
   | "cinematic"
-  | "lift";
+  | "lift"
+  | "subtle";
 
 interface ScrollRevealProps {
   children: React.ReactNode;
@@ -29,6 +30,7 @@ const variantClass: Record<ScrollRevealVariant, string> = {
   fade: "reveal-fade",
   cinematic: "reveal-cinematic",
   lift: "reveal-lift",
+  subtle: "reveal-subtle",
 };
 
 const CINEMATIC_VARIANTS = new Set<ScrollRevealVariant>([
@@ -63,7 +65,7 @@ export function ScrollReveal({
       },
       {
         threshold: amount,
-        rootMargin: "-6% 0px",
+        rootMargin: "-4% 0px",
       }
     );
 
@@ -125,7 +127,7 @@ export function RevealStagger({
       },
       {
         threshold: amount,
-        rootMargin: "-6% 0px",
+        rootMargin: "-4% 0px",
       }
     );
 
