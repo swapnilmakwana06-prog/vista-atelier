@@ -84,9 +84,8 @@ export function CinematicHeroMedia() {
           Math.max(window.scrollY / window.innerHeight, 0),
           1
         );
-        const parallaxY = progress * 72;
-        const scale = 1 + progress * 0.07;
-        media.style.transform = `translate3d(0, ${parallaxY}px, 0) scale(${scale})`;
+        const parallaxY = progress * 48;
+        media.style.transform = `translate3d(0, ${parallaxY}px, 0)`;
         if (overlay) {
           overlay.style.opacity = String(0.52 + progress * 0.42);
         }
@@ -103,13 +102,13 @@ export function CinematicHeroMedia() {
   return (
     <div
       ref={containerRef}
-      className="hero-cinematic-wrap absolute inset-0 overflow-hidden bg-[#03050c]"
+      className="hero-cinematic-wrap absolute inset-0 overflow-hidden bg-background"
     >
       <div
         ref={mediaRef}
-        className="hero-media-parallax-outer gpu-layer absolute inset-0 will-change-transform"
+        className="hero-media-parallax-outer absolute inset-0"
       >
-        <div className="hero-media-parallax-inner hero-media-layer absolute inset-[-8%]">
+        <div className="hero-media-parallax-inner hero-media-layer absolute inset-0">
           <Image
             src={heroPoster}
             alt=""
@@ -147,7 +146,7 @@ export function CinematicHeroMedia() {
         </div>
       </div>
 
-      <div ref={overlayRef} className="hero-cinematic-overlay gpu-layer absolute inset-0">
+      <div ref={overlayRef} className="hero-cinematic-overlay absolute inset-0">
         <div className="hero-god-rays pointer-events-none absolute inset-0" />
         <div className="hero-light-streak pointer-events-none absolute inset-0" />
         <div className="hero-cinematic-flare pointer-events-none absolute inset-0" />
@@ -158,7 +157,7 @@ export function CinematicHeroMedia() {
         <div className="hero-overlay-t pointer-events-none absolute inset-0" />
         <div className="hero-cinematic-bottom pointer-events-none absolute inset-0" />
         <div className="hero-cinematic-gold-wash pointer-events-none absolute inset-0" />
-        <div className="hero-film-grain pointer-events-none absolute inset-0" />
+
       </div>
     </div>
   );

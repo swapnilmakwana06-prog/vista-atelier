@@ -298,34 +298,56 @@ body {
   font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
 
-/* Sharp, unfiltered — default for all photography */
-.crisp-image {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  image-rendering: auto;
+/* ── Global image & video sharpness (Retina / 4K) ── */
+img,
+picture,
+video,
+.crisp-image,
+.hero-video,
+.hero-static-img,
+.hero-desktop-poster,
+.signature-featured-image,
+.portfolio-card-image {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+  -ms-interpolation-mode: bicubic;
 }
 
-/* Optional subtle grade for secondary/editorial shots */
+.crisp-image,
+.hero-video,
+.hero-static-img,
+.hero-desktop-poster,
+.portfolio-card-image,
+.signature-featured-image {
+  transform: none !important;
+  filter: none !important;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+  will-change: auto;
+}
+
 .luxury-image {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  filter: brightness(0.92) saturate(0.95);
-}
-
-html:not(.dark) .luxury-image {
-  filter: brightness(0.97) saturate(0.92);
+  filter: none;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
 }
 
 .hero-media-layer,
 .hero-video {
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.hero-video {
   object-fit: cover;
   object-position: center;
+}
+
+/* Prevent 3D/GPU parents from softening child photos */
+.tilt-3d img,
+.tilt-3d .crisp-image,
+.reveal-base img,
+.reveal-base .crisp-image,
+.gpu-layer > img,
+.gpu-layer > .crisp-image,
+.gpu-layer img.crisp-image {
+  transform: none !important;
+  filter: none !important;
 }
 
 .gpu-layer {
@@ -788,7 +810,7 @@ html[data-perf="lite"] .btn-premium-outline {
 html[data-perf="lite"] .animate-ken-burns-subtle,
 html[data-perf="lite"] .hero-media-parallax-inner {
   animation: none !important;
-  transform: scale(1.02) !important;
+  transform: none !important;
 }
 
 @media (max-width: 767px), (pointer: coarse) {
@@ -968,7 +990,7 @@ html[data-perf="lite"] .hero-media-parallax-inner {
 
   .hero-media-parallax-inner {
     animation: none;
-    transform: scale(1.02);
+    transform: none;
   }
 }
 
@@ -1564,38 +1586,24 @@ html[data-perf="lite"] .hero-media-parallax-inner {
 }
 
 .hero-film-grain {
-  opacity: 0.045;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-  mix-blend-mode: overlay;
-}
-
-.hero-desktop-poster {
-  image-rendering: -webkit-optimize-contrast;
+  display: none;
 }
 
 .hero-media-parallax-outer {
-  transform: translate3d(0, 0, 0);
+  transform: none;
+  will-change: auto;
 }
 
 .hero-media-parallax-inner {
-  transform: translate3d(0, 0, 0) scale(1.05);
-  animation: hero-ken-burns 32s ease-in-out infinite alternate;
-}
-
-@keyframes hero-ken-burns {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1.05);
-  }
-  100% {
-    transform: translate3d(-0.6%, -0.4%, 0) scale(1.08);
-  }
+  transform: none;
+  animation: none;
+  will-change: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-media-parallax-inner {
     animation: none;
-    transform: scale(1.04);
+    transform: none;
   }
 
   .hero-lift-item {
@@ -2156,8 +2164,8 @@ html[data-perf="lite"] .hero-media-parallax-inner {
 }
 
 .portfolio-card-image {
-  transform: translateZ(0);
-  backface-visibility: hidden;
+  transform: none;
+  backface-visibility: visible;
 }
 
 .portfolio-card-scrim {
@@ -2246,10 +2254,6 @@ html[data-perf="lite"] .hero-media-parallax-inner {
   color: rgba(212, 175, 126, 0.6);
 }
 
-.portfolio-card-premium .portfolio-card-image {
-  transition: transform 0.85s var(--ease-premium);
-}
-
 @media (hover: hover) and (pointer: fine) {
   .portfolio-card-premium:hover {
     transform: translateY(-5px);
@@ -2260,7 +2264,7 @@ html[data-perf="lite"] .hero-media-parallax-inner {
   }
 
   .portfolio-card-premium:hover .portfolio-card-image {
-    transform: scale(1.05);
+    transform: none;
   }
 
   .portfolio-card-premium:hover .portfolio-card-line {
@@ -3570,7 +3574,8 @@ html:not(.dark) .hero-overlay-t {
 }
 
 .animate-ken-burns-subtle {
-  animation: ken-burns-subtle 28s ease-in-out infinite alternate;
+  animation: none;
+  transform: none;
 }
 
 @keyframes pulse-slow {
@@ -3795,13 +3800,11 @@ html:not(.dark) .hero-overlay-t {
 @keyframes cosmic-headline-in {
   0% {
     opacity: 0;
-    transform: perspective(900px) rotateX(12deg) translate3d(0, 32px, -40px);
-    filter: blur(4px);
+    transform: perspective(900px) rotateX(8deg) translate3d(0, 24px, -20px);
   }
   100% {
     opacity: 1;
-    transform: perspective(900px) rotateX(3deg) translate3d(0, 0, 0);
-    filter: blur(0);
+    transform: perspective(900px) rotateX(0deg) translate3d(0, 0, 0);
   }
 }
 

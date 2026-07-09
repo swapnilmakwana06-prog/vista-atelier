@@ -61,7 +61,7 @@ export function SelectedWorks() {
                       alt={work.title}
                       priority={i < 2}
                       sizes={IMAGE_SIZES.half}
-                      className="portfolio-card-image transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
+                      className="portfolio-card-image"
                     />
 
                     <div className="portfolio-card-scrim absolute inset-0" />

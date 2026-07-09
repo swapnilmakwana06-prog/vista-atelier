@@ -6,8 +6,8 @@ import type {
   Testimonial,
 } from "@/types";
 
-const img = (id: string, w = 1600) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80&fm=webp`;
+const img = (id: string, w = 2400) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=90&fm=webp&dpr=2`;
 
 export const studioStats = [
   { value: "18+", label: "Years of Practice" },
@@ -338,7 +338,7 @@ export const journalArticles: JournalArticle[] = [
     title: "Material Stories: Calacatta & Walnut",
     category: "Materials",
     date: "February 2026",
-    image: img("photo-1600607687939-ce8a6c25118c", 800),
+    image: img("photo-1600607687939-ce8a6c25118c", 1600),
     excerpt: "A dialogue between stone and wood in our latest Manhattan residence.",
   },
   {
@@ -346,13 +346,14 @@ export const journalArticles: JournalArticle[] = [
     title: "Golden Hour: Designing with Light",
     category: "Process",
     date: "January 2026",
-    image: img("photo-1600566753190-17f0baa2a6c3", 800),
+    image: img("photo-1600566753190-17f0baa2a6c3", 1600),
     excerpt: "How we choreograph natural light as the primary design element.",
   },
 ];
 
 export const heroFallbackImage = img("photo-1618221195710-dd6b41faaea6", 3840);
-export const heroPoster = "/hero-poster.jpg";
+/** High-res remote poster — local /hero-poster.jpg is too small for full-bleed hero */
+export const heroPoster = heroFallbackImage;
 
 export const heroCopy = {
   label: "Bespoke Interior Atelier",
@@ -366,7 +367,7 @@ export const heroCopy = {
   scrollHint: "Discover the Atelier",
 } as const;
 
-export const fallbackProjectImage = img("photo-1616486338812-3dadae4b4ace", 1200);
+export const fallbackProjectImage = img("photo-1616486338812-3dadae4b4ace", 2400);
 export const heroVideoSrc =
   process.env.NEXT_PUBLIC_HERO_VIDEO_URL ?? "/hero-video.mp4";
 export const heroVideoWebm =

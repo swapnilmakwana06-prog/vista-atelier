@@ -89,7 +89,7 @@ export function Tilt3D({
     const y = (e.clientY - rect.top) / rect.height - 0.5;
     s.tiltY = x * intensity;
     s.tiltX = -y * intensity;
-    el.style.transform = `perspective(900px) rotateY(${s.tiltY}deg) rotateX(${s.tiltX}deg) translateZ(${s.scrollZ + 20}px) scale(1.02)`;
+    el.style.transform = `perspective(900px) rotateY(${s.tiltY}deg) rotateX(${s.tiltX}deg) translateZ(${s.scrollZ + 12}px)`;
   };
 
   const handleLeave = () => {

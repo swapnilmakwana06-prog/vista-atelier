@@ -66,7 +66,7 @@ export function Projects() {
                   alt={featured.title}
                   priority
                   sizes={IMAGE_SIZES.full}
-                  className="signature-featured-image transition-transform duration-[1.1s] ease-out group-hover:scale-[1.04]"
+                  className="signature-featured-image"
                 />
                 <div className="signature-featured-scrim absolute inset-0" />
                 <div className="signature-featured-glow absolute inset-0" />

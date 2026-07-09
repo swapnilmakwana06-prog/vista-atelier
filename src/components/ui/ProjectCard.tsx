@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { memo } from "react";
 import { ProjectImage } from "@/components/ui/ProjectImage";
-import { Tilt3D } from "@/components/ui/Tilt3D";
 import { IMAGE_SIZES } from "@/lib/image";
 import type { Project } from "@/types";
 import { cn } from "@/lib/utils";
@@ -26,7 +25,6 @@ export const ProjectCard = memo(function ProjectCard({
   }[project.aspect];
 
   return (
-    <Tilt3D intensity={12}>
       <Link
         href={`/projects/${project.id}`}
         className="portfolio-card portfolio-card-premium group relative mb-7 block cursor-pointer break-inside-avoid"
@@ -76,6 +74,5 @@ export const ProjectCard = memo(function ProjectCard({
           </div>
         </div>
       </Link>
-    </Tilt3D>
   );
 });

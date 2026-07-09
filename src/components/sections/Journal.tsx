@@ -5,13 +5,7 @@ import { journalArticles } from "@/lib/data";
 import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/image";
 import { CosmicSection } from "@/components/ui/CosmicSection";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { usePerformanceMode } from "@/hooks/usePerformanceMode";
-
 export function Journal() {
-  const { preferLite } = usePerformanceMode();
-  const imageQuality = preferLite
-    ? IMAGE_QUALITY.defaultLite
-    : IMAGE_QUALITY.default;
   return (
     <CosmicSection id="journal" className="section-padding">
       <div className="mx-auto max-w-[1600px]">
@@ -35,8 +29,8 @@ export function Journal() {
                     alt={article.title}
                     fill
                     loading="lazy"
-                    quality={imageQuality}
-                    className="crisp-image object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
+                    quality={IMAGE_QUALITY.default}
+                    className="crisp-image object-cover"
                     sizes={IMAGE_SIZES.journal}
                   />
                 </div>

@@ -20,9 +20,6 @@ export function StudioFilm() {
   const [ready, setReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const { preferLite } = usePerformanceMode();
-  const imageQuality = preferLite
-    ? IMAGE_QUALITY.featuredLite
-    : IMAGE_QUALITY.featured;
 
   const showPoster = preferLite || !playing || videoFailed || !ready;
 
@@ -79,7 +76,7 @@ export function StudioFilm() {
           alt="Studio film poster"
           fill
           loading="lazy"
-          quality={imageQuality}
+          quality={IMAGE_QUALITY.featured}
           className={cn(
             "crisp-image object-cover",
             showPoster ? "opacity-100" : "opacity-0"
